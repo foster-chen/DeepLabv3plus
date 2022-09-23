@@ -1,2 +1,0 @@
-Device: cuda
-Dataset: cityscapes, Train set: 2975, Val set: 500
