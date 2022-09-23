@@ -36,8 +36,10 @@ def get_argparser():
                         choices=['carla'], help='Name of dataset for boosting')
     parser.add_argument("--boost_data_root", type=str, default=None,
                         help="path to dataset for boosting")
-    parser.add_argument("--boost_batch_size", type=int, default=4,
-                        help='batch size for boost dataset (default: 4)')
+    parser.add_argument("--boost_strength", type=float, default=0.5,
+                        help='The ratio of boost dataset per batch. boost_data_batch_size = round(batch_size * boost_strength). real_data_batch_size = batch_size - boost_data_batch_size')
+    parser.add_argument("--disable_fci", action='store_true', default=False,
+                        help='When using boost dataset, Force Complete Iteration (FCI) will ensure that no data is left unseen by the model. Use this option to disable FCI so that each epoch stops when one of the datasets finished iterating')
     
     # Datset Options
     parser.add_argument("--data_root", type=str, default='./datasets/data',
@@ -327,6 +329,9 @@ def main():
 
     opts.run_name = f"{opts.run_name}_{datetime.now().strftime('%Y-%m-%d_%H%M%S')}"
     
+    if opts.disable_fci:
+        assert opts.boost_dataset, "This option can only be used when boosting with another dataset"
+    
     if opts.coder is not None:
         if opts.coder.lower() == 'voc':
             opts.num_classes = 21
@@ -367,17 +372,18 @@ def main():
     random.seed(opts.random_seed)
     
     # Setup dataloader
-    boost_loader = None
-    boost_iterator = None
-    
     if opts.dataset == 'voc' and not opts.crop_val:
         opts.val_batch_size = 1
 
     if opts.boost_dataset is not None:
+        assert 0 < opts.boost_strength <= 1, "--boost_strength must be > 0 & <= 1"
+        opts.boost_batch_size = round(opts.batch_size * opts.boost_strength)
+        opts.batch_size = opts.batch_size - opts.boost_batch_size
+        
         train_dst, val_dst, boost_dst = get_dataset(opts)
 
         boost_loader = data.DataLoader(boost_dst, batch_size=opts.boost_batch_size, shuffle=True, num_workers=2, drop_last=True)
-        print(f"Boost set: {boost_dst}", end='')
+        print(f"Boost set: {len(boost_dst)}", end=' ')
     else:
         train_dst, val_dst = get_dataset(opts)
     
@@ -475,33 +481,43 @@ def main():
         train_iterator= train_loader.__iter__()
         if opts.boost_dataset is not None:
             boost_iterator = boost_loader.__iter__()
+            
+        train_loader_dry = False
+        boost_loader_dry = False
         
         while True:
             cur_itrs += 1
-
             try:
                 images, labels = train_iterator.__next__()
+                
             except StopIteration:
-                break
-            
-    # def get_next_boost_batch():
-    #     global boost_loader
-    #     global boost_iterator
-
-    #     try:
-    #         image, label = boost_iterator.__next__()
-    #     except:
-    #         boost_iterator = boost_loader.__iter__()
-    #         image, label = boost_iterator.__next__()
-        
-    #     return image, label
+                if opts.disable_fci:
+                    break
+                else:
+                    train_loader_dry = True
+                    if train_loader_dry and boost_loader_dry:
+                        break
+                    else:
+                        print("################ Authentic dataset depleted, reshuffling ################")
+                        train_iterator = train_loader.__iter__()
+                        images, labels = train_iterator.__next__()
+                    
     
             if opts.boost_dataset is not None:
                 try:
                     boost_images, boost_labels = boost_iterator.__next__()
+                    
                 except StopIteration:
-                    boost_iterator = boost_loader.__iter__()
-                    boost_images, boost_labels = boost_iterator.__next__()
+                    if opts.disable_fci:
+                        break
+                    else:
+                        boost_loader_dry = True
+                        if train_loader_dry and boost_loader_dry:
+                            break
+                        else:
+                            print("################ Boost dataset depleted, reshuffling ################")
+                            boost_iterator = boost_loader.__iter__()
+                            boost_images, boost_labels = boost_iterator.__next__()
 
                 images = torch.cat((images, boost_images), dim=0)
                 labels = torch.cat((labels, boost_labels), dim=0)

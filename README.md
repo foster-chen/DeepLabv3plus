@@ -10,13 +10,15 @@ Specify the model architecture with '--model ARCH_NAME' and set the output strid
 | DeepLabV3    |  DeepLabV3+        |
 | :---: | :---:     |
 |deeplabv3_resnet50|deeplabv3plus_resnet50|
-|deeplabv3_resnet101|*deeplabv3plus_resnet101*|
+|deeplabv3_resnet101|deeplabv3plus_resnet101|
 |deeplabv3_mobilenet|deeplabv3plus_mobilenet ||
 |deeplabv3_hrnetv2_48 | deeplabv3plus_hrnetv2_48 |
 |deeplabv3_hrnetv2_32 | deeplabv3plus_hrnetv2_32 |
 |deeplabv3_xception | deeplabv3plus_xception |
 
-All pretrained models: [Dropbox](https://www.dropbox.com/sh/w3z9z8lqpi8b2w7/AAB0vkl4F5vy6HdIhmRCTKHSa?dl=0), [Tencent Weiyun](https://share.weiyun.com/qqx78Pv5)
+
+
+<!--All pretrained models: [Dropbox](https://www.dropbox.com/sh/w3z9z8lqpi8b2w7/AAB0vkl4F5vy6HdIhmRCTKHSa?dl=0), [Tencent Weiyun](https://share.weiyun.com/qqx78Pv5)
 
 Note: The HRNet backbone was contributed by @timothylimyl. A pre-trained backbone is available at [google drive](https://drive.google.com/file/d/1NxCK7Zgn5PmeS7W1jYLt5J9E0RRZ2oyF/view?usp=sharing).
 
@@ -52,11 +54,11 @@ python predict.py --input datasets/data/cityscapes/leftImg8bit/train/bremen  --d
 
 ### 6. New backbones
 
-Please refer to [this commit (Xception)](https://github.com/VainF/DeepLabV3Plus-Pytorch/commit/c4b51e435e32b0deba5fc7c8ff106293df90590d) for more details about how to add new backbones.
+Please refer to [this commit (Xception)](https://github.com/VainF/DeepLabV3Plus-Pytorch/commit/c4b51e435e32b0deba5fc7c8ff106293df90590d) for more details about how to add new backbones.-->
 
 ## Results
 
-### 1. Performance on Pascal VOC2012 Aug (21 classes, 513 x 513)
+<!--### 1. Performance on Pascal VOC2012 Aug (21 classes, 513 x 513)
 
 Training: 513x513 random crop  
 validation: 513x513 center crop
@@ -68,20 +70,19 @@ validation: 513x513 center crop
 | DeepLabV3-ResNet101         | 16      |  72.1G     |  16/16   |  0.773     |    [Download](https://www.dropbox.com/s/vtenndnsrnh4068/best_deeplabv3_resnet101_voc_os16.pth?dl=0)       | [Download](https://share.weiyun.com/iCkzATAw)  |
 | DeepLabV3Plus-MobileNet   | 16      |  17.0G      |  16/16   |  0.711    |    [Download](https://www.dropbox.com/s/0idrhwz6opaj7q4/best_deeplabv3plus_mobilenet_voc_os16.pth?dl=0)   | [Download](https://share.weiyun.com/djX6MDwM) |
 | DeepLabV3Plus-ResNet50    | 16      |   62.7G     |  16/16   |  0.772     |    [Download](https://www.dropbox.com/s/dgxyd3jkyz24voa/best_deeplabv3plus_resnet50_voc_os16.pth?dl=0)   | [Download](https://share.weiyun.com/uTM4i2jG) |
-| DeepLabV3Plus-ResNet101     | 16      |  83.4G     |  16/16   |  0.783     |    [Download](https://www.dropbox.com/s/bm3hxe7wmakaqc5/best_deeplabv3plus_resnet101_voc_os16.pth?dl=0)   | [Download](https://share.weiyun.com/UNPZr3dk) |
+| DeepLabV3Plus-ResNet101     | 16      |  83.4G     |  16/16   |  0.783     |    [Download](https://www.dropbox.com/s/bm3hxe7wmakaqc5/best_deeplabv3plus_resnet101_voc_os16.pth?dl=0)   | [Download](https://share.weiyun.com/UNPZr3dk) |-->
 
 
-### 2. Performance on Cityscapes (19 classes, 1024 x 2048)
+### 1. Performance on Datasets (19 classes, 1024 x 2048)
 
-Training: 768x768 random crop  
-validation: 1024x2048
+Model: DeepLabV3Plus-ResNet101
 
-|  Model          | Batch Size  | FLOPs  | train/val OS   |  mIoU        | Dropbox  |  Tencent Weiyun  |
-| :--------        | :-------------: | :----:   | :-----------: | :--------: | :--------: |  :----:   |
-| DeepLabV3Plus-MobileNet   | 16      |  135G      |  16/16   |  0.721  |    [Download](https://www.dropbox.com/s/753ojyvsh3vdjol/best_deeplabv3plus_mobilenet_cityscapes_os16.pth?dl=0) | [Download](https://share.weiyun.com/aSKjdpbL) 
-| DeepLabV3Plus-ResNet101   | 16      |  N/A      |  16/16   |  0.762  |    [Download](https://drive.google.com/file/d/1t7TC8mxQaFECt4jutdq_NMnWxdm6B-Nb/view?usp=sharing) | N/A |
+|  Dataset          | Train Crop | Val Crop| Batch Size  | train/val OS   |  mIoU        | Train History |
+| :--------        | :-------------: | :----:   | :-----------: |:-----------: | :--------: | :--: |
+| CityScapes   | 768x768 | 1024x2048 |  16    |  16/16   |  0.7711  | [W&B](https://wandb.ai/foster-chen/DeepLabv3plus/runs/19cptw4j) |
+| NightCity   | 512x512  |  512x1024 | 16       |  16/16   |  0.5300 | [W&B](https://wandb.ai/foster-chen/DeepLabv3plus/runs/2qc0x3ov) |
 
-
+<!--
 #### Segmentation Results on Pascal VOC2012 (DeepLabv3Plus-MobileNet)
 
 <div>
@@ -103,26 +104,29 @@ validation: 1024x2048
 <img src="samples/114_target.png"  width="20%">
 <img src="samples/114_pred.png"    width="20%">
 <img src="samples/114_overlay.png" width="20%">
-</div>
+</div>-->
 
-#### Segmentation Results on Cityscapes (DeepLabv3Plus-MobileNet)
-
-<div>
-<img src="samples/city_1_target.png"   width="45%">
-<img src="samples/city_1_overlay.png"  width="45%">
-</div>
+#### Segmentation Results on CityScapes (DeepLabv3Plus-ResNet101)
 
 <div>
-<img src="samples/city_6_target.png"   width="45%">
-<img src="samples/city_6_overlay.png"  width="45%">
+<img src="samples/0_target.png"   width="45%">
+<img src="samples/0_overlay_iter30000.png"  width="45%">
 </div>
 
+#### Segmentation Results on NightCity (DeepLabv3Plus-ResNet101)
 
+<div>
+<img src="samples/0_target copy.png"   width="45%">
+<img src="samples/0_overlay_iter40000.png"  width="45%">
+</div>
+
+<!--
 #### Visualization of training
 
 ![trainvis](samples/visdom-screenshoot.png)
+-->
 
-
+<!--
 ## Pascal VOC
 
 ### 1. Requirements
@@ -209,26 +213,69 @@ Results will be saved at ./results.
 ```bash
 python main.py --model deeplabv3plus_mobilenet --enable_vis --vis_port 28333 --gpu_id 0 --year 2012_aug --crop_val --lr 0.01 --crop_size 513 --batch_size 16 --output_stride 16 --ckpt checkpoints/best_deeplabv3plus_mobilenet_voc_os16.pth --test_only --save_val_results
 ```
+-->
 
-## Cityscapes
+## Dataset Path format
 
-### 1. Download cityscapes and extract it to 'datasets/data/cityscapes'
+### CityScapes
 
 ```
 /datasets
-    /data
-        /cityscapes
-            /gtFine
-            /leftImg8bit
+    /cityscapes
+        /gtFine
+        /leftImg8bit
 ```
 
-### 2. Train your model on Cityscapes
+### NightCity
 
+```
+/datasets
+    /NightLab
+        /train
+            /image
+            /label
+        /val
+            /image
+            /label
+```
+<!--
+### ***Any*** synthetic data (CARLA)
+
+```
+/datasets
+    /name_of_dataset
+        /train
+            /rgb
+            /semantic
+        /val
+            /rgb
+            /semantic
+```
+-->
+
+## Model training
+CityScapes
 ```bash
-python main.py --model deeplabv3plus_mobilenet --dataset cityscapes --enable_vis --vis_port 28333 --gpu_id 0  --lr 0.1  --crop_size 768 --batch_size 16 --output_stride 16 --data_root ./datasets/data/cityscapes 
+python main.py --model deeplabv3plus_resnet101 --dataset cityscapes --lr 0.1 --crop_size 768 --batch_size 16 --output_stride 16 --data_root /your_dataset_path/CityScapes --gpu_id 0,1 --run_name set_custom_runname --save_val_results 5
 ```
+NightCity
+```bash
+main.py --model deeplabv3plus_resnet101 --dataset nightlab --gpu_id 0,1 --lr 0.1 --crop_size 512 --batch_size 16 --output_stride 16 --data_root /your_dataset_path/NightLab/ --run_name set_custom_runname --save_val_results 5
+```
+Boosting dataset with synthetic data <br/>
+***to be added***
 
-## Reference
+
+Additional options
+- `--run_name`: Determine a custom run name, default is "unnamed"
+- `--wandb`: Use Weights & Bias monitoring while training
+- *`--boost_dataset`: Name of synthetic data, only support "carla" atm
+- *`--boost_data_root`: Root of synthetic data
+- *`--boost_strength`: The proportion of synthetic data in one batch. $boost\_batch\_size = \textrm{round}(batch\_size \times boost\_strength)$, $real\_batch\_size = batch\_size - boost\_batch\_size$
+
+\* : Not finalized due to recent changes in Carla source code
+
+### Reference
 
 [1] [Rethinking Atrous Convolution for Semantic Image Segmentation](https://arxiv.org/abs/1706.05587)
 
