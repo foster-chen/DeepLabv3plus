@@ -271,7 +271,7 @@ Additional options
 - `--wandb`: Use Weights & Bias monitoring while training
 - *`--boost_dataset`: Name of synthetic data, only support "carla" atm
 - *`--boost_data_root`: Root of synthetic data
-- *`--boost_strength`: The proportion of synthetic data in one batch. $boost\_batch\_size = \textrm{round}(batch\_size \times boost\_strength)$, $real\_batch\_size = batch\_size - boost\_batch\_size$
+- *`--boost_strength`: The proportion of synthetic data in one batch. $$boost\_batch\_size = \textrm{round}(batch\_size \times boost\_strength)$$ $$real\_batch\_size = batch\_size - boost\_batch\_size$$
 
 \* : Not finalized due to recent changes in Carla source code
 
