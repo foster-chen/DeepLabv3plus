@@ -1,0 +1,227 @@
+2022-09-01 18:51:52,112 INFO    MainThread:3720278 [internal.py:wandb_internal():90] W&B internal server running at pid: 3720278, started at: 2022-09-01 18:51:52.112326
+2022-09-01 18:51:52,116 INFO    WriterThread:3720278 [datastore.py:open_for_write():75] open: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/run-z4xjlp2w.wandb
+2022-09-01 18:51:52,117 DEBUG   SenderThread:3720278 [sender.py:send():236] send: header
+2022-09-01 18:51:52,117 DEBUG   SenderThread:3720278 [sender.py:send():236] send: run
+2022-09-01 18:51:52,505 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: check_version
+2022-09-01 18:51:52,509 INFO    SenderThread:3720278 [dir_watcher.py:__init__():216] watching files in: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files
+2022-09-01 18:51:52,509 INFO    SenderThread:3720278 [sender.py:_start_run_threads():815] run started: z4xjlp2w with start time 1662029511
+2022-09-01 18:51:52,509 DEBUG   SenderThread:3720278 [sender.py:send():236] send: summary
+2022-09-01 18:51:52,510 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:51:52,510 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: check_version
+2022-09-01 18:51:53,512 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_created():269] file/dir created: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:51:56,726 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: run_start
+2022-09-01 18:51:56,746 DEBUG   HandlerThread:3720278 [meta.py:__init__():35] meta init
+2022-09-01 18:51:56,747 DEBUG   HandlerThread:3720278 [meta.py:__init__():49] meta init done
+2022-09-01 18:51:56,747 DEBUG   HandlerThread:3720278 [meta.py:probe():209] probe
+2022-09-01 18:51:56,754 DEBUG   HandlerThread:3720278 [meta.py:_setup_git():199] setup git
+2022-09-01 18:51:56,773 DEBUG   HandlerThread:3720278 [meta.py:_setup_git():206] setup git done
+2022-09-01 18:51:56,774 DEBUG   HandlerThread:3720278 [meta.py:_save_pip():53] save pip
+2022-09-01 18:51:56,775 DEBUG   HandlerThread:3720278 [meta.py:_save_pip():67] save pip done
+2022-09-01 18:51:56,775 DEBUG   HandlerThread:3720278 [meta.py:_save_conda():74] save conda
+2022-09-01 18:51:57,514 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_created():269] file/dir created: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/requirements.txt
+2022-09-01 18:51:57,515 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_created():269] file/dir created: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/conda-environment.yaml
+2022-09-01 18:51:58,389 DEBUG   HandlerThread:3720278 [meta.py:_save_conda():84] save conda done
+2022-09-01 18:51:58,389 DEBUG   HandlerThread:3720278 [meta.py:probe():247] probe done
+2022-09-01 18:51:58,395 DEBUG   SenderThread:3720278 [sender.py:send():236] send: files
+2022-09-01 18:51:58,395 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-metadata.json with policy now
+2022-09-01 18:51:58,402 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: stop_status
+2022-09-01 18:51:58,403 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: stop_status
+2022-09-01 18:51:58,514 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/conda-environment.yaml
+2022-09-01 18:51:58,514 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_created():269] file/dir created: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-metadata.json
+2022-09-01 18:51:58,515 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_created():269] file/dir created: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:51:58,752 DEBUG   SenderThread:3720278 [sender.py:send():236] send: telemetry
+2022-09-01 18:51:59,302 INFO    Thread-11 :3720278 [upload_job.py:push():138] Uploaded file /tmp/tmp8t3sk4fowandb/2l076t32-wandb-metadata.json
+2022-09-01 18:52:00,515 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:02,517 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:10,359 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: partial_history
+2022-09-01 18:52:10,521 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:11,942 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: partial_history
+2022-09-01 18:52:11,943 DEBUG   SenderThread:3720278 [sender.py:send():236] send: history
+2022-09-01 18:52:11,943 DEBUG   SenderThread:3720278 [sender.py:send():236] send: summary
+2022-09-01 18:52:11,944 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:52:12,522 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:52:12,523 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:13,607 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: partial_history
+2022-09-01 18:52:13,608 DEBUG   SenderThread:3720278 [sender.py:send():236] send: history
+2022-09-01 18:52:13,608 DEBUG   SenderThread:3720278 [sender.py:send():236] send: summary
+2022-09-01 18:52:13,609 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:52:13,754 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: stop_status
+2022-09-01 18:52:13,755 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: stop_status
+2022-09-01 18:52:14,523 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:52:14,523 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:15,275 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: partial_history
+2022-09-01 18:52:15,275 DEBUG   SenderThread:3720278 [sender.py:send():236] send: history
+2022-09-01 18:52:15,276 DEBUG   SenderThread:3720278 [sender.py:send():236] send: summary
+2022-09-01 18:52:15,276 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:52:15,523 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:52:16,524 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:16,921 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: partial_history
+2022-09-01 18:52:16,922 DEBUG   SenderThread:3720278 [sender.py:send():236] send: history
+2022-09-01 18:52:16,922 DEBUG   SenderThread:3720278 [sender.py:send():236] send: summary
+2022-09-01 18:52:16,940 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:52:17,525 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:52:18,525 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:18,598 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: partial_history
+2022-09-01 18:52:18,599 DEBUG   SenderThread:3720278 [sender.py:send():236] send: history
+2022-09-01 18:52:18,599 DEBUG   SenderThread:3720278 [sender.py:send():236] send: summary
+2022-09-01 18:52:18,600 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:52:19,526 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:52:20,249 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: partial_history
+2022-09-01 18:52:20,250 DEBUG   SenderThread:3720278 [sender.py:send():236] send: history
+2022-09-01 18:52:20,250 DEBUG   SenderThread:3720278 [sender.py:send():236] send: summary
+2022-09-01 18:52:20,251 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:52:20,526 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:52:20,527 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:21,948 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: partial_history
+2022-09-01 18:52:21,949 DEBUG   SenderThread:3720278 [sender.py:send():236] send: history
+2022-09-01 18:52:21,949 DEBUG   SenderThread:3720278 [sender.py:send():236] send: summary
+2022-09-01 18:52:21,950 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:52:22,527 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:52:22,528 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:23,528 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/config.yaml
+2022-09-01 18:52:23,868 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: partial_history
+2022-09-01 18:52:23,869 DEBUG   SenderThread:3720278 [sender.py:send():236] send: history
+2022-09-01 18:52:23,869 DEBUG   SenderThread:3720278 [sender.py:send():236] send: summary
+2022-09-01 18:52:23,870 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:52:24,528 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:52:24,529 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:25,532 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: partial_history
+2022-09-01 18:52:25,532 DEBUG   SenderThread:3720278 [sender.py:send():236] send: history
+2022-09-01 18:52:25,533 DEBUG   SenderThread:3720278 [sender.py:send():236] send: summary
+2022-09-01 18:52:25,536 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:52:26,529 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:52:26,530 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:28,530 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:29,104 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: stop_status
+2022-09-01 18:52:29,105 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: stop_status
+2022-09-01 18:52:29,758 DEBUG   SenderThread:3720278 [sender.py:send():236] send: telemetry
+2022-09-01 18:52:30,532 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:32,451 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:32,452 DEBUG   SenderThread:3720278 [sender.py:send():236] send: exit
+2022-09-01 18:52:32,452 INFO    SenderThread:3720278 [sender.py:send_exit():372] handling exit code: 1
+2022-09-01 18:52:32,452 INFO    SenderThread:3720278 [sender.py:send_exit():374] handling runtime: 35
+2022-09-01 18:52:32,455 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:52:32,455 INFO    SenderThread:3720278 [sender.py:send_exit():380] send defer
+2022-09-01 18:52:32,456 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:32,457 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: defer
+2022-09-01 18:52:32,457 INFO    HandlerThread:3720278 [handler.py:handle_request_defer():163] handle defer: 0
+2022-09-01 18:52:32,458 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: defer
+2022-09-01 18:52:32,458 INFO    SenderThread:3720278 [sender.py:send_request_defer():389] handle sender defer: 0
+2022-09-01 18:52:32,458 INFO    SenderThread:3720278 [sender.py:transition_state():393] send defer: 1
+2022-09-01 18:52:32,458 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: defer
+2022-09-01 18:52:32,458 INFO    HandlerThread:3720278 [handler.py:handle_request_defer():163] handle defer: 1
+2022-09-01 18:52:32,533 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:52:32,534 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:33,446 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:33,447 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: defer
+2022-09-01 18:52:33,447 INFO    SenderThread:3720278 [sender.py:send_request_defer():389] handle sender defer: 1
+2022-09-01 18:52:33,447 INFO    SenderThread:3720278 [sender.py:transition_state():393] send defer: 2
+2022-09-01 18:52:33,448 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:33,448 DEBUG   SenderThread:3720278 [sender.py:send():236] send: stats
+2022-09-01 18:52:33,449 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: defer
+2022-09-01 18:52:33,450 INFO    HandlerThread:3720278 [handler.py:handle_request_defer():163] handle defer: 2
+2022-09-01 18:52:33,450 DEBUG   SenderThread:3720278 [sender.py:send():236] send: history
+2022-09-01 18:52:33,451 DEBUG   SenderThread:3720278 [sender.py:send():236] send: summary
+2022-09-01 18:52:33,451 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:52:33,452 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: defer
+2022-09-01 18:52:33,452 INFO    SenderThread:3720278 [sender.py:send_request_defer():389] handle sender defer: 2
+2022-09-01 18:52:33,452 INFO    SenderThread:3720278 [sender.py:transition_state():393] send defer: 3
+2022-09-01 18:52:33,452 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: defer
+2022-09-01 18:52:33,453 INFO    HandlerThread:3720278 [handler.py:handle_request_defer():163] handle defer: 3
+2022-09-01 18:52:33,453 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: defer
+2022-09-01 18:52:33,453 INFO    SenderThread:3720278 [sender.py:send_request_defer():389] handle sender defer: 3
+2022-09-01 18:52:33,453 INFO    SenderThread:3720278 [sender.py:transition_state():393] send defer: 4
+2022-09-01 18:52:33,453 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: defer
+2022-09-01 18:52:33,454 INFO    HandlerThread:3720278 [handler.py:handle_request_defer():163] handle defer: 4
+2022-09-01 18:52:33,454 DEBUG   SenderThread:3720278 [sender.py:send():236] send: summary
+2022-09-01 18:52:33,454 INFO    SenderThread:3720278 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-09-01 18:52:33,455 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: defer
+2022-09-01 18:52:33,455 INFO    SenderThread:3720278 [sender.py:send_request_defer():389] handle sender defer: 4
+2022-09-01 18:52:33,455 INFO    SenderThread:3720278 [sender.py:transition_state():393] send defer: 5
+2022-09-01 18:52:33,455 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: defer
+2022-09-01 18:52:33,455 INFO    HandlerThread:3720278 [handler.py:handle_request_defer():163] handle defer: 5
+2022-09-01 18:52:33,456 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: defer
+2022-09-01 18:52:33,456 INFO    SenderThread:3720278 [sender.py:send_request_defer():389] handle sender defer: 5
+2022-09-01 18:52:33,534 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:52:33,550 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:33,838 INFO    SenderThread:3720278 [sender.py:transition_state():393] send defer: 6
+2022-09-01 18:52:33,839 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:33,839 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: defer
+2022-09-01 18:52:33,839 INFO    HandlerThread:3720278 [handler.py:handle_request_defer():163] handle defer: 6
+2022-09-01 18:52:33,840 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: defer
+2022-09-01 18:52:33,840 INFO    SenderThread:3720278 [sender.py:send_request_defer():389] handle sender defer: 6
+2022-09-01 18:52:33,840 INFO    SenderThread:3720278 [dir_watcher.py:finish():353] shutting down directory watcher
+2022-09-01 18:52:33,940 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:34,534 INFO    Thread-7  :3720278 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/config.yaml
+2022-09-01 18:52:34,535 INFO    SenderThread:3720278 [dir_watcher.py:finish():383] scan: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files
+2022-09-01 18:52:34,535 INFO    SenderThread:3720278 [dir_watcher.py:finish():397] scan save: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/conda-environment.yaml conda-environment.yaml
+2022-09-01 18:52:34,536 INFO    SenderThread:3720278 [dir_watcher.py:finish():397] scan save: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/requirements.txt requirements.txt
+2022-09-01 18:52:34,542 INFO    SenderThread:3720278 [dir_watcher.py:finish():397] scan save: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json wandb-summary.json
+2022-09-01 18:52:34,542 INFO    SenderThread:3720278 [dir_watcher.py:finish():397] scan save: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/config.yaml config.yaml
+2022-09-01 18:52:34,543 INFO    SenderThread:3720278 [dir_watcher.py:finish():397] scan save: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-metadata.json wandb-metadata.json
+2022-09-01 18:52:34,543 INFO    SenderThread:3720278 [dir_watcher.py:finish():397] scan save: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log output.log
+2022-09-01 18:52:34,549 INFO    SenderThread:3720278 [sender.py:transition_state():393] send defer: 7
+2022-09-01 18:52:34,550 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:34,561 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: defer
+2022-09-01 18:52:34,561 INFO    HandlerThread:3720278 [handler.py:handle_request_defer():163] handle defer: 7
+2022-09-01 18:52:34,566 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: defer
+2022-09-01 18:52:34,566 INFO    SenderThread:3720278 [sender.py:send_request_defer():389] handle sender defer: 7
+2022-09-01 18:52:34,566 INFO    SenderThread:3720278 [file_pusher.py:finish():171] shutting down file pusher
+2022-09-01 18:52:34,657 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:34,657 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:34,758 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:34,759 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:34,860 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:34,860 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:34,962 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:34,962 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:35,064 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:35,065 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:35,166 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:35,166 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:35,268 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:35,268 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:35,369 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:35,370 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:35,449 INFO    Thread-14 :3720278 [upload_job.py:push():138] Uploaded file /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/wandb-summary.json
+2022-09-01 18:52:35,455 INFO    Thread-15 :3720278 [upload_job.py:push():138] Uploaded file /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/config.yaml
+2022-09-01 18:52:35,474 INFO    Thread-12 :3720278 [upload_job.py:push():138] Uploaded file /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/conda-environment.yaml
+2022-09-01 18:52:35,475 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:35,475 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:35,499 INFO    Thread-13 :3720278 [upload_job.py:push():138] Uploaded file /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/requirements.txt
+2022-09-01 18:52:35,523 INFO    Thread-16 :3720278 [upload_job.py:push():138] Uploaded file /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/files/output.log
+2022-09-01 18:52:35,576 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:35,577 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:35,678 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:35,679 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:35,724 INFO    Thread-6  :3720278 [sender.py:transition_state():393] send defer: 8
+2022-09-01 18:52:35,726 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: defer
+2022-09-01 18:52:35,726 INFO    HandlerThread:3720278 [handler.py:handle_request_defer():163] handle defer: 8
+2022-09-01 18:52:35,727 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: defer
+2022-09-01 18:52:35,727 INFO    SenderThread:3720278 [sender.py:send_request_defer():389] handle sender defer: 8
+2022-09-01 18:52:35,780 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:36,197 INFO    SenderThread:3720278 [sender.py:transition_state():393] send defer: 9
+2022-09-01 18:52:36,197 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:36,198 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: defer
+2022-09-01 18:52:36,198 INFO    HandlerThread:3720278 [handler.py:handle_request_defer():163] handle defer: 9
+2022-09-01 18:52:36,198 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: defer
+2022-09-01 18:52:36,199 INFO    SenderThread:3720278 [sender.py:send_request_defer():389] handle sender defer: 9
+2022-09-01 18:52:36,199 INFO    SenderThread:3720278 [sender.py:transition_state():393] send defer: 10
+2022-09-01 18:52:36,200 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: defer
+2022-09-01 18:52:36,200 INFO    HandlerThread:3720278 [handler.py:handle_request_defer():163] handle defer: 10
+2022-09-01 18:52:36,200 DEBUG   SenderThread:3720278 [sender.py:send():236] send: final
+2022-09-01 18:52:36,200 DEBUG   SenderThread:3720278 [sender.py:send():236] send: footer
+2022-09-01 18:52:36,200 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: defer
+2022-09-01 18:52:36,200 INFO    SenderThread:3720278 [sender.py:send_request_defer():389] handle sender defer: 10
+2022-09-01 18:52:36,299 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: poll_exit
+2022-09-01 18:52:36,300 DEBUG   SenderThread:3720278 [sender.py:send_request():250] send_request: poll_exit
+2022-09-01 18:52:36,300 INFO    SenderThread:3720278 [file_pusher.py:join():176] waiting for file pusher
+2022-09-01 18:52:37,129 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: sampled_history
+2022-09-01 18:52:37,131 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: get_summary
+2022-09-01 18:52:37,132 DEBUG   HandlerThread:3720278 [handler.py:handle_request():140] handle_request: shutdown
+2022-09-01 18:52:37,132 INFO    HandlerThread:3720278 [handler.py:finish():806] shutting down handler
+2022-09-01 18:52:37,201 INFO    WriterThread:3720278 [datastore.py:close():279] close: /home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/wandb/run-20220901_185151-z4xjlp2w/run-z4xjlp2w.wandb
+2022-09-01 18:52:38,028 INFO    SenderThread:3720278 [sender.py:finish():1114] shutting down sender
+2022-09-01 18:52:38,028 INFO    SenderThread:3720278 [file_pusher.py:finish():171] shutting down file pusher
+2022-09-01 18:52:38,028 INFO    SenderThread:3720278 [file_pusher.py:join():176] waiting for file pusher
+2022-09-01 18:52:38,032 INFO    MainThread:3720278 [internal.py:handle_exit():80] Internal process exited

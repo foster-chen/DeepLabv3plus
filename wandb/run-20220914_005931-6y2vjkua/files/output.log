@@ -1,0 +1,14 @@
+
+Device: cuda
+Traceback (most recent call last):
+  File "main.py", line 566, in <module>
+    main()
+  File "main.py", line 376, in main
+    train_dst, val_dst, boost_dst = get_dataset(opts)
+  File "main.py", line 219, in get_dataset
+    boost_dst = Carla(root=opts.boost_data_root,
+  File "/home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/datasets/carla.py", line 31, in __init__
+    self.root = os.path.expanduser(root)
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/posixpath.py", line 231, in expanduser
+    path = os.fspath(path)
+TypeError: expected str, bytes or os.PathLike object, not NoneType

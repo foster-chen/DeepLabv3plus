@@ -5,9 +5,11 @@ import os
 import random
 import argparse
 import numpy as np
+from datetime import datetime
+import wandb
 
 from torch.utils import data
-from datasets import VOCSegmentation, Cityscapes
+from datasets import VOCSegmentation, Cityscapes, NightLab, Carla
 from utils import ext_transforms as et
 from metrics import StreamSegMetrics
 
@@ -23,14 +25,29 @@ import matplotlib.pyplot as plt
 def get_argparser():
     parser = argparse.ArgumentParser()
 
+    # Added Options
+    parser.add_argument("--run_name", type=str, default='unnamed',
+                        help="Custom name of the run")
+    parser.add_argument("--wandb", action='store_true', default=False,
+                        help='Inject W&B monitoring')
+    parser.add_argument("--coder", type=str, choices=['voc', 'cityscapes', 'nightlab', 'carla'], default=None,
+                        help='Select train_id mapper')
+    parser.add_argument("--boost_dataset", type=str, default=None,
+                        choices=['carla'], help='Name of dataset for boosting')
+    parser.add_argument("--boost_data_root", type=str, default=None,
+                        help="path to dataset for boosting")
+    parser.add_argument("--boost_batch_size", type=int, default=4,
+                        help='batch size for boost dataset (default: 4)')
+    
     # Datset Options
     parser.add_argument("--data_root", type=str, default='./datasets/data',
                         help="path to Dataset")
     parser.add_argument("--dataset", type=str, default='voc',
-                        choices=['voc', 'cityscapes'], help='Name of dataset')
+                        choices=['voc', 'cityscapes', 'nightlab', 'carla'], help='Name of dataset')
     parser.add_argument("--num_classes", type=int, default=None,
                         help="num classes (default: None)")
-
+    
+    
     # Deeplab Options
     available_models = sorted(name for name in network.modeling.__dict__ if name.islower() and \
                               not (name.startswith("__") or name.startswith('_')) and callable(
@@ -44,7 +61,7 @@ def get_argparser():
 
     # Train Options
     parser.add_argument("--test_only", action='store_true', default=False)
-    parser.add_argument("--save_val_results", action='store_true', default=False,
+    parser.add_argument("--save_val_results", type=int, default=None,
                         help="save segmentation results to \"./results\"")
     parser.add_argument("--total_itrs", type=int, default=30e3,
                         help="epoch number (default: 30k)")
@@ -128,7 +145,31 @@ def get_dataset(opts):
         val_dst = VOCSegmentation(root=opts.data_root, year=opts.year,
                                   image_set='val', download=False, transform=val_transform)
 
-    if opts.dataset == 'cityscapes':
+    elif opts.dataset == 'cityscapes':
+        train_transform = et.ExtCompose([
+            # et.ExtResize( 512 ),
+            et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size)),
+            et.ExtColorJitter(brightness=0.5, contrast=0.5, saturation=0.5),
+            et.ExtRandomHorizontalFlip(),
+            et.ExtToTensor(),
+            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225]),
+        ])
+
+        val_transform = et.ExtCompose([
+            # et.ExtResize(opts.crop_size),
+            # et.ExtCenterCrop(opts.crop_size),
+            et.ExtToTensor(),
+            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225]),
+        ])
+
+        train_dst = Cityscapes(root=opts.data_root,
+                               split='train', coder=opts.coder, transform=train_transform)
+        val_dst = Cityscapes(root=opts.data_root,
+                             split='val', coder=opts.coder, transform=val_transform)
+        
+    elif opts.dataset == 'nightlab':
         train_transform = et.ExtCompose([
             # et.ExtResize( 512 ),
             et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size)),
@@ -146,31 +187,98 @@ def get_dataset(opts):
                             std=[0.229, 0.224, 0.225]),
         ])
 
-        train_dst = Cityscapes(root=opts.data_root,
+        train_dst = NightLab(root=opts.data_root,
+                               split='train', coder=opts.coder, transform=train_transform)
+        val_dst = NightLab(root=opts.data_root,
+                             split='val', coder=opts.coder, transform=val_transform)
+        
+    elif opts.dataset == 'carla':
+        train_transform = et.ExtCompose([
+            # et.ExtResize( 512 ),
+            et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size)),
+            et.ExtColorJitter(brightness=0.5, contrast=0.5, saturation=0.5),
+            et.ExtRandomHorizontalFlip(),
+            et.ExtToTensor(),
+            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225]),
+        ])
+
+        val_transform = et.ExtCompose([
+            # et.ExtResize( 512 ),
+            et.ExtToTensor(),
+            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225]),
+        ])
+
+        train_dst = Carla(root=opts.data_root,
                                split='train', transform=train_transform)
-        val_dst = Cityscapes(root=opts.data_root,
+        val_dst = Carla(root=opts.data_root,
                              split='val', transform=val_transform)
-    return train_dst, val_dst
+    
+    if opts.boost_dataset is not None:
+        if opts.boost_dataset.lower() == 'carla':
+            boost_dst = Carla(root=opts.boost_data_root,
+                              split='train', transform=train_transform)
+            if opts.coder is not None:
+                if opts.coder.lower() == 'voc':
+                    boost_dst.decode_target = VOCSegmentation.decode_target
+                elif opts.coder.lower() == 'cityscapes':
+                    boost_dst.decode_target = Cityscapes.decode_target
+                elif opts.coder.lower() == 'nightlab':
+                    boost_dst.decode_target = NightLab.decode_target
+                elif opts.coder.lower() == 'carla':
+                    boost_dst.decode_target = Carla.decode_target
+    
+    # change the decoder if specified
+    if opts.coder is not None:
+        if opts.coder.lower() == 'voc':
+            train_dst.decode_target = VOCSegmentation.decode_target
+            val_dst.decode_target = VOCSegmentation.decode_target
+        elif opts.coder.lower() == 'cityscapes':
+            train_dst.decode_target = Cityscapes.decode_target
+            val_dst.decode_target = Cityscapes.decode_target
+        elif opts.coder.lower() == 'nightlab':
+            train_dst.decode_target = NightLab.decode_target
+            val_dst.decode_target = NightLab.decode_target
+        elif opts.coder.lower() == 'carla':
+            train_dst.decode_target = Carla.decode_target
+            val_dst.decode_target = Carla.decode_target
+            
+    if opts.boost_dataset is not None:
+        return train_dst, val_dst, boost_dst
+    else:
+        return train_dst, val_dst
 
 
-def validate(opts, model, loader, device, metrics, ret_samples_ids=None):
+def validate(opts, model, loader, device, metrics, iter, criterion=None, ret_samples_ids=None):
     """Do validation and return specified samples"""
     metrics.reset()
     ret_samples = []
-    if opts.save_val_results:
-        if not os.path.exists('results'):
-            os.mkdir('results')
+    img_to_store = opts.save_val_results
+    if opts.save_val_results is not None:
+        utils.mkdir("results")
+        utils.mkdir(f"results/{opts.run_name}")
+        utils.mkdir(f"results/{opts.run_name}/val_samples")
         denorm = utils.Denormalize(mean=[0.485, 0.456, 0.406],
                                    std=[0.229, 0.224, 0.225])
         img_id = 0
-
+        
+    val_loss = []
+    
+    iterator = loader.__iter__()
+    
     with torch.no_grad():
-        for i, (images, labels) in tqdm(enumerate(loader)):
-
+        for i in tqdm(range(len(iterator))):
+            images, labels = iterator.__next__()
             images = images.to(device, dtype=torch.float32)
             labels = labels.to(device, dtype=torch.long)
 
             outputs = model(images)
+            
+            if criterion is not None and opts.wandb:
+                loss = criterion(outputs, labels)
+                val_loss.append(loss.detach().cpu().numpy())
+            
             preds = outputs.detach().max(dim=1)[1].cpu().numpy()
             targets = labels.cpu().numpy()
 
@@ -179,42 +287,70 @@ def validate(opts, model, loader, device, metrics, ret_samples_ids=None):
                 ret_samples.append(
                     (images[0].detach().cpu().numpy(), targets[0], preds[0]))
 
-            if opts.save_val_results:
-                for i in range(len(images)):
-                    image = images[i].detach().cpu().numpy()
-                    target = targets[i]
-                    pred = preds[i]
+            if img_to_store != 0:
+                image = images[0].detach().cpu().numpy()
+                target = targets[0]
+                pred = preds[0]
 
-                    image = (denorm(image) * 255).transpose(1, 2, 0).astype(np.uint8)
-                    target = loader.dataset.decode_target(target).astype(np.uint8)
-                    pred = loader.dataset.decode_target(pred).astype(np.uint8)
+                image = (denorm(image) * 255).transpose(1, 2, 0).astype(np.uint8)
+                target = loader.dataset.decode_target(target).astype(np.uint8)
+                pred = loader.dataset.decode_target(pred).astype(np.uint8)
 
-                    Image.fromarray(image).save('results/%d_image.png' % img_id)
-                    Image.fromarray(target).save('results/%d_target.png' % img_id)
-                    Image.fromarray(pred).save('results/%d_pred.png' % img_id)
+                Image.fromarray(image).save(f'results/{opts.run_name}/val_samples/{img_id}_image.png')
+                Image.fromarray(target).save(f'results/{opts.run_name}/val_samples/{img_id}_target.png')
+                Image.fromarray(pred).save(f'results/{opts.run_name}/val_samples/{img_id}_pred_iter{iter}.png')
 
-                    fig = plt.figure()
-                    plt.imshow(image)
-                    plt.axis('off')
-                    plt.imshow(pred, alpha=0.7)
-                    ax = plt.gca()
-                    ax.xaxis.set_major_locator(matplotlib.ticker.NullLocator())
-                    ax.yaxis.set_major_locator(matplotlib.ticker.NullLocator())
-                    plt.savefig('results/%d_overlay.png' % img_id, bbox_inches='tight', pad_inches=0)
-                    plt.close()
-                    img_id += 1
+                fig = plt.figure()
+                plt.imshow(image)
+                plt.axis('off')
+                plt.imshow(pred, alpha=0.7)
+                ax = plt.gca()
+                ax.xaxis.set_major_locator(matplotlib.ticker.NullLocator())
+                ax.yaxis.set_major_locator(matplotlib.ticker.NullLocator())
+                plt.savefig(f'results/{opts.run_name}/val_samples/{img_id}_overlay_iter{iter}.png', bbox_inches='tight', pad_inches=0)
+                plt.close()
+                
+                img_id += 1
+                img_to_store -= 1
 
         score = metrics.get_results()
+        
+        if opts.wandb:
+            wandb.log({"val_loss": np.average(val_loss),
+                       "val_mIoU": score["Mean IoU"],
+                       "class_IoU": score["Class IoU"]}, step=iter)
     return score, ret_samples
 
 
 def main():
     opts = get_argparser().parse_args()
-    if opts.dataset.lower() == 'voc':
-        opts.num_classes = 21
-    elif opts.dataset.lower() == 'cityscapes':
-        opts.num_classes = 19
 
+    opts.run_name = f"{opts.run_name}_{datetime.now().strftime('%Y-%m-%d_%H%M%S')}"
+    
+    if opts.coder is not None:
+        if opts.coder.lower() == 'voc':
+            opts.num_classes = 21
+        elif opts.coder.lower() == 'cityscapes':
+            opts.num_classes = 19
+        elif opts.coder.lower() == 'nightlab':
+            opts.num_classes = 19
+        elif opts.coder.lower() == 'carla':
+            opts.num_classes = 17
+    else:
+        if opts.dataset.lower() == 'voc':
+            opts.num_classes = 21
+        elif opts.dataset.lower() == 'cityscapes':
+            opts.num_classes = 19
+        elif opts.dataset.lower() == 'nightlab':
+            opts.num_classes = 19
+        elif opts.dataset.lower() == 'carla':
+            opts.num_classes = 17
+
+    if opts.wandb:
+        wandb.init(project="DeepLabv3plus",
+                   name=opts.run_name,
+                   config=opts)
+    
     # Setup visualization
     vis = Visualizer(port=opts.vis_port,
                      env=opts.vis_env) if opts.enable_vis else None
@@ -229,17 +365,25 @@ def main():
     torch.manual_seed(opts.random_seed)
     np.random.seed(opts.random_seed)
     random.seed(opts.random_seed)
-
+    
     # Setup dataloader
+    boost_loader = None
+    boost_iterator = None
+    
     if opts.dataset == 'voc' and not opts.crop_val:
         opts.val_batch_size = 1
 
-    train_dst, val_dst = get_dataset(opts)
-    train_loader = data.DataLoader(
-        train_dst, batch_size=opts.batch_size, shuffle=True, num_workers=2,
+    if opts.boost_dataset is not None:
+        train_dst, val_dst, boost_dst = get_dataset(opts)
+
+        boost_loader = data.DataLoader(boost_dst, batch_size=opts.boost_batch_size, shuffle=True, num_workers=2, drop_last=True)
+        print(f"Boost set: {boost_dst}", end='')
+    else:
+        train_dst, val_dst = get_dataset(opts)
+    
+    train_loader = data.DataLoader(train_dst, batch_size=opts.batch_size, shuffle=True, num_workers=2,
         drop_last=True)  # drop_last=True to ignore single-image batches.
-    val_loader = data.DataLoader(
-        val_dst, batch_size=opts.val_batch_size, shuffle=True, num_workers=2)
+    val_loader = data.DataLoader(val_dst, batch_size=opts.val_batch_size, shuffle=False, num_workers=2)
     print("Dataset: %s, Train set: %d, Val set: %d" %
           (opts.dataset, len(train_dst), len(val_dst)))
 
@@ -282,7 +426,7 @@ def main():
             "best_score": best_score,
         }, path)
         print("Model saved as %s" % path)
-
+    
     utils.mkdir('checkpoints')
     # Restore
     best_score = 0.0
@@ -315,18 +459,53 @@ def main():
     if opts.test_only:
         model.eval()
         val_score, ret_samples = validate(
-            opts=opts, model=model, loader=val_loader, device=device, metrics=metrics, ret_samples_ids=vis_sample_id)
+            opts=opts, model=model, loader=val_loader, device=device, metrics=metrics, iter="_test", ret_samples_ids=vis_sample_id)
         print(metrics.to_str(val_score))
         return
 
+    utils.mkdir(f"checkpoints/{opts.run_name}")
+    
+    best_ckpt_filename = ""
     interval_loss = 0
     while True:  # cur_itrs < opts.total_itrs:
         # =====  Train  =====
         model.train()
         cur_epochs += 1
-        for (images, labels) in train_loader:
+        
+        train_iterator= train_loader.__iter__()
+        if opts.boost_dataset is not None:
+            boost_iterator = boost_loader.__iter__()
+        
+        while True:
             cur_itrs += 1
 
+            try:
+                images, labels = train_iterator.__next__()
+            except StopIteration:
+                break
+            
+    # def get_next_boost_batch():
+    #     global boost_loader
+    #     global boost_iterator
+
+    #     try:
+    #         image, label = boost_iterator.__next__()
+    #     except:
+    #         boost_iterator = boost_loader.__iter__()
+    #         image, label = boost_iterator.__next__()
+        
+    #     return image, label
+    
+            if opts.boost_dataset is not None:
+                try:
+                    boost_images, boost_labels = boost_iterator.__next__()
+                except StopIteration:
+                    boost_iterator = boost_loader.__iter__()
+                    boost_images, boost_labels = boost_iterator.__next__()
+
+                images = torch.cat((images, boost_images), dim=0)
+                labels = torch.cat((labels, boost_labels), dim=0)
+            
             images = images.to(device, dtype=torch.float32)
             labels = labels.to(device, dtype=torch.long)
 
@@ -345,21 +524,26 @@ def main():
                 interval_loss = interval_loss / 10
                 print("Epoch %d, Itrs %d/%d, Loss=%f" %
                       (cur_epochs, cur_itrs, opts.total_itrs, interval_loss))
+                
+                if opts.wandb:
+                    wandb.log({"train_loss": interval_loss}, step=cur_itrs)
+                    
                 interval_loss = 0.0
 
             if (cur_itrs) % opts.val_interval == 0:
-                save_ckpt('checkpoints/latest_%s_%s_os%d.pth' %
-                          (opts.model, opts.dataset, opts.output_stride))
+                save_ckpt(f'checkpoints/{opts.run_name}/latest_{opts.model}_{opts.dataset}_os{opts.output_stride}.pth')
                 print("validation...")
                 model.eval()
                 val_score, ret_samples = validate(
-                    opts=opts, model=model, loader=val_loader, device=device, metrics=metrics,
+                    opts=opts, model=model, criterion=criterion, loader=val_loader, device=device, metrics=metrics, iter=cur_itrs,
                     ret_samples_ids=vis_sample_id)
                 print(metrics.to_str(val_score))
                 if val_score['Mean IoU'] > best_score:  # save best model
+                    if best_ckpt_filename != "":
+                        os.remove(f"checkpoints/{opts.run_name}/{best_ckpt_filename}")
                     best_score = val_score['Mean IoU']
-                    save_ckpt('checkpoints/best_%s_%s_os%d.pth' %
-                              (opts.model, opts.dataset, opts.output_stride))
+                    best_ckpt_filename = f"best_{best_score:.6f}_iter{cur_itrs}_{opts.model}_{opts.dataset}_os{opts.output_stride}.pth"
+                    save_ckpt(f'checkpoints/{opts.run_name}/{best_ckpt_filename}')
 
                 if vis is not None:  # visualize validation score and samples
                     vis.vis_scalar("[Val] Overall Acc", cur_itrs, val_score['Overall Acc'])

@@ -1,0 +1,132 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.12.21
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.8.13
+    start_time: 1662713022
+    t:
+      1:
+      - 1
+      - 5
+      - 41
+      - 51
+      - 53
+      - 55
+      2:
+      - 1
+      - 5
+      - 41
+      - 51
+      - 53
+      - 55
+      3:
+      - 13
+      - 16
+      4: 3.8.13
+      5: 0.12.21
+      8:
+      - 5
+batch_size:
+  desc: null
+  value: 8
+ckpt:
+  desc: null
+  value: null
+coder:
+  desc: null
+  value: carla
+continue_training:
+  desc: null
+  value: false
+crop_size:
+  desc: null
+  value: 768
+crop_val:
+  desc: null
+  value: false
+data_root:
+  desc: null
+  value: /home/chenht/datasets/CityScapes
+dataset:
+  desc: null
+  value: cityscapes
+download:
+  desc: null
+  value: false
+enable_vis:
+  desc: null
+  value: false
+gpu_id:
+  desc: null
+  value: '6'
+loss_type:
+  desc: null
+  value: cross_entropy
+lr:
+  desc: null
+  value: 0.1
+lr_policy:
+  desc: null
+  value: poly
+model:
+  desc: null
+  value: deeplabv3plus_resnet101
+num_classes:
+  desc: null
+  value: 17
+output_stride:
+  desc: null
+  value: 16
+print_interval:
+  desc: null
+  value: 10
+random_seed:
+  desc: null
+  value: 1
+run_name:
+  desc: null
+  value: test_CityScapes_CarlaCoded_2022-09-09_164341
+save_val_results:
+  desc: null
+  value: 5
+separable_conv:
+  desc: null
+  value: false
+step_size:
+  desc: null
+  value: 10000
+test_only:
+  desc: null
+  value: false
+total_itrs:
+  desc: null
+  value: 30000.0
+val_batch_size:
+  desc: null
+  value: 4
+val_interval:
+  desc: null
+  value: 100
+vis_env:
+  desc: null
+  value: main
+vis_num_samples:
+  desc: null
+  value: 8
+vis_port:
+  desc: null
+  value: '13570'
+wandb:
+  desc: null
+  value: true
+weight_decay:
+  desc: null
+  value: 0.0001
+year:
+  desc: null
+  value: '2012'

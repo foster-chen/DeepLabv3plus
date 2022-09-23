@@ -1,0 +1,30 @@
+Device: cuda
+Dataset: cityscapes, Train set: 2975, Val set: 500
+Traceback (most recent call last):
+  File "main.py", line 533, in <module>
+    main()
+  File "main.py", line 366, in main
+    model = network.modeling.__dict__[opts.model](num_classes=opts.num_classes, output_stride=opts.output_stride)
+  File "/home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/network/modeling.py", line 201, in deeplabv3plus_resnet101
+    return _load_model('deeplabv3plus', 'resnet101', num_classes, output_stride=output_stride, pretrained_backbone=pretrained_backbone)
+  File "/home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/network/modeling.py", line 117, in _load_model
+    model = _segm_resnet(arch_type, backbone, num_classes, output_stride=output_stride, pretrained_backbone=pretrained_backbone)
+  File "/home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/network/modeling.py", line 41, in _segm_resnet
+    backbone = resnet.__dict__[backbone_name](
+  File "/home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/network/backbone/resnet.py", line 269, in resnet101
+    return _resnet('resnet101', Bottleneck, [3, 4, 23, 3], pretrained, progress,
+  File "/home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/network/backbone/resnet.py", line 221, in _resnet
+    model.load_state_dict(state_dict)
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1483, in load_state_dict
+    load(self)
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1481, in load
+    load(child, prefix + name + '.')
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1481, in load
+    load(child, prefix + name + '.')
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1481, in load
+    load(child, prefix + name + '.')
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1477, in load
+    module._load_from_state_dict(
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1413, in _load_from_state_dict
+    param.copy_(input_param)
+KeyboardInterrupt

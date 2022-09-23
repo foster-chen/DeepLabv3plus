@@ -1,0 +1,44 @@
+Device: cuda
+Boost set: <datasets.carla.Carla object at 0x7f9d1310c490>Dataset: nightlab, Train set: 2998, Val set: 1299
+[!] Retrain
+Epoch 1, Itrs 10/30000, Loss=1.449947
+Epoch 1, Itrs 20/30000, Loss=0.975392
+Epoch 1, Itrs 30/30000, Loss=0.782657
+Epoch 1, Itrs 40/30000, Loss=0.695133
+Epoch 1, Itrs 50/30000, Loss=0.673448
+Epoch 1, Itrs 60/30000, Loss=0.601992
+Epoch 1, Itrs 70/30000, Loss=0.586869
+Epoch 1, Itrs 80/30000, Loss=0.597649
+Epoch 1, Itrs 90/30000, Loss=0.526773
+Epoch 1, Itrs 100/30000, Loss=0.559249
+Model saved as checkpoints/Nightlab_Carla2DarkZurich_Mixture_Test_2022-09-15_110853/latest_deeplabv3plus_resnet101_nightlab_os16.pth
+validation...
+  0%|                                                                                                                       | 0/325 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "main.py", line 567, in <module>
+    main()
+  File "main.py", line 537, in main
+    val_score, ret_samples = validate(
+  File "main.py", line 272, in validate
+    images, labels = iterator.__next__()
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 530, in __next__
+    data = self._next_data()
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1224, in _next_data
+    return self._process_data(data)
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1250, in _process_data
+    data.reraise()
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/_utils.py", line 457, in reraise
+    raise exception
+IndexError: Caught IndexError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/utils/data/_utils/worker.py", line 287, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 49, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/utils/data/_utils/fetch.py", line 49, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/datasets/nightlab.py", line 51, in __getitem__
+    target = self.encode_target(target)
+  File "/home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/datasets/nightlab.py", line 58, in encode_target
+    return self.id_to_train_id[np.array(target)]
+IndexError: index 255 is out of bounds for axis 0 with size 35

@@ -1,0 +1,129 @@
+Device: cuda
+Boost set: <datasets.carla.Carla object at 0x7f8cb04fd790>Dataset: cityscapes, Train set: 2975, Val set: 500
+/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+[!] Retrain
+Epoch 1, Itrs 10/30000, Loss=1.303928
+Epoch 1, Itrs 20/30000, Loss=0.795314
+Epoch 1, Itrs 30/30000, Loss=0.689793
+Epoch 1, Itrs 40/30000, Loss=0.566288
+Epoch 1, Itrs 50/30000, Loss=0.611208
+Epoch 1, Itrs 60/30000, Loss=0.583068
+Epoch 1, Itrs 70/30000, Loss=0.561560
+Epoch 1, Itrs 80/30000, Loss=0.453684
+Epoch 1, Itrs 90/30000, Loss=0.445747
+  0%|                                                            | 0/125 [00:00<?, ?it/s]/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+Epoch 1, Itrs 100/30000, Loss=0.498830
+Model saved as checkpoints/CityScapes_Carla_Mixture_Test_Multithread_2022-09-13_184330/latest_deeplabv3plus_resnet101_cityscapes_os16.pth
+validation...
+
+
+
+
+
+
+
+
+
+
+
+
+
+100%|██████████████████████████████████████████████████| 125/125 [00:27<00:00,  4.55it/s]
+Overall Acc: 0.798317
+Mean Acc: 0.308231
+FreqW Acc: 0.651961
+Mean IoU: 0.263418
+Model saved as checkpoints/CityScapes_Carla_Mixture_Test_Multithread_2022-09-13_184330/best_0.263418_iter100_deeplabv3plus_resnet101_cityscapes_os16.pth
+Epoch 1, Itrs 110/30000, Loss=0.456692
+Epoch 1, Itrs 120/30000, Loss=0.444203
+Epoch 1, Itrs 130/30000, Loss=0.475559
+Epoch 1, Itrs 140/30000, Loss=0.458273
+Epoch 1, Itrs 150/30000, Loss=0.496908
+Epoch 1, Itrs 160/30000, Loss=0.387275
+Epoch 1, Itrs 170/30000, Loss=0.411864
+Epoch 1, Itrs 180/30000, Loss=0.413010
+Epoch 1, Itrs 190/30000, Loss=0.385166
+Epoch 1, Itrs 200/30000, Loss=0.381845
+Model saved as checkpoints/CityScapes_Carla_Mixture_Test_Multithread_2022-09-13_184330/latest_deeplabv3plus_resnet101_cityscapes_os16.pth
+validation...
+  0%|                                                                                                                                                                                                                            | 0/125 [00:00<?, ?it/s]/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+
+
+
+
+
+
+
+
+
+
+
+
+ 98%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋   | 123/125 [00:26<00:00,  5.38it/s]
+Overall Acc: 0.827792
+Mean Acc: 0.400439
+FreqW Acc: 0.717584
+Mean IoU: 0.335767
+
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 125/125 [00:27<00:00,  4.62it/s]
+Epoch 1, Itrs 210/30000, Loss=0.383886
+Epoch 1, Itrs 220/30000, Loss=0.374075
+Epoch 1, Itrs 230/30000, Loss=0.438280
+Epoch 1, Itrs 240/30000, Loss=0.383819
+Epoch 1, Itrs 250/30000, Loss=0.321691
+Epoch 1, Itrs 260/30000, Loss=0.295668
+Epoch 1, Itrs 270/30000, Loss=0.361096
+Epoch 1, Itrs 280/30000, Loss=0.330588
+Epoch 1, Itrs 290/30000, Loss=0.337031
+Epoch 1, Itrs 300/30000, Loss=0.333908
+Model saved as checkpoints/CityScapes_Carla_Mixture_Test_Multithread_2022-09-13_184330/latest_deeplabv3plus_resnet101_cityscapes_os16.pth
+validation...
+  0%|                                                                                                                                                                                                                            | 0/125 [00:00<?, ?it/s]/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+
+
+
+
+
+
+
+
+
+
+
+
+ 94%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏           | 118/125 [00:25<00:01,  4.48it/s]
+Overall Acc: 0.864546
+Mean Acc: 0.463571
+FreqW Acc: 0.773527
+
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 125/125 [00:27<00:00,  4.61it/s]
+Model saved as checkpoints/CityScapes_Carla_Mixture_Test_Multithread_2022-09-13_184330/best_0.383817_iter300_deeplabv3plus_resnet101_cityscapes_os16.pth
+Epoch 1, Itrs 310/30000, Loss=0.309105
+Epoch 1, Itrs 320/30000, Loss=0.313281
+Epoch 1, Itrs 330/30000, Loss=0.308592
+Epoch 1, Itrs 340/30000, Loss=0.280917
+Epoch 1, Itrs 350/30000, Loss=0.335401
+Epoch 1, Itrs 360/30000, Loss=0.319167
+Epoch 1, Itrs 370/30000, Loss=0.332542
+Traceback (most recent call last):
+  File "main.py", line 564, in <module>
+    main()
+  File "main.py", line 481, in main
+    images, labels = train_iterator.__next__()
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 530, in __next__
+    data = self._next_data()
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1197, in _next_data
+    raise StopIteration
+KeyboardInterrupt

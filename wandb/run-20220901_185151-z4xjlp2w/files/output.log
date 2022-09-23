@@ -1,0 +1,25 @@
+Device: cuda
+Dataset: nightlab, Train set: 2998, Val set: 1299
+[!] Retrain
+Epoch 1, Itrs 10/30000, Loss=1.769784
+Epoch 1, Itrs 20/30000, Loss=1.416254
+Epoch 1, Itrs 30/30000, Loss=1.260640
+Epoch 1, Itrs 40/30000, Loss=1.100842
+Epoch 1, Itrs 50/30000, Loss=0.885157
+Epoch 1, Itrs 60/30000, Loss=0.803851
+Epoch 1, Itrs 70/30000, Loss=0.752221
+Epoch 1, Itrs 80/30000, Loss=0.894758
+Epoch 1, Itrs 90/30000, Loss=0.822668
+Epoch 1, Itrs 100/30000, Loss=0.803355
+Model saved as checkpoints/test_NightLab_2022-09-01_185150/latest_deeplabv3plus_resnet101_nightlab_os16.pth
+validation...
+0it [00:02, ?it/s]
+Traceback (most recent call last):
+  File "main.py", line 533, in <module>
+  File "main.py", line 494, in main
+    val_score, ret_samples = validate(
+  File "main.py", line 269, in validate
+    target = loader.dataset.decode_target(target).astype(np.uint8)
+  File "/home/chenht/DeepLabv3plus/DeepLabV3Plus-Pytorch/datasets/nightlab.py", line 73, in decode_target
+    return cls.train_id_to_color[target]
+AttributeError: type object 'NightLab' has no attribute 'train_id_to_color'

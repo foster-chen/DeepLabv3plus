@@ -1,0 +1,87 @@
+Device: cuda
+Dataset: cityscapes, Train set: 2975, Val set: 500
+[!] Retrain
+Epoch 1, Itrs 10/30000, Loss=1.567593
+Epoch 1, Itrs 20/30000, Loss=0.731040
+Epoch 1, Itrs 30/30000, Loss=0.957518
+Epoch 1, Itrs 40/30000, Loss=0.913853
+Epoch 1, Itrs 50/30000, Loss=0.659289
+Epoch 1, Itrs 60/30000, Loss=0.771264
+Epoch 1, Itrs 70/30000, Loss=0.767549
+Epoch 1, Itrs 80/30000, Loss=0.766323
+Epoch 1, Itrs 90/30000, Loss=0.639614
+0it [00:00, ?it/s]/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+Epoch 1, Itrs 100/30000, Loss=0.675518
+Model saved as checkpoints/delete_2022-09-09_155853/latest_deeplabv3plus_resnet101_cityscapes_os16.pth
+validation...
+
+
+
+
+
+
+
+
+
+
+
+39it [00:25,  1.53it/s]
+Traceback (most recent call last):
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/multiprocessing/queues.py", line 245, in _feed
+    send_bytes(obj)
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/multiprocessing/connection.py", line 200, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/multiprocessing/connection.py", line 411, in _send_bytes
+    self._send(header + buf)
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/multiprocessing/connection.py", line 368, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Traceback (most recent call last):
+  File "main.py", line 502, in <module>
+    main()
+  File "main.py", line 472, in main
+    val_score, ret_samples = validate(
+  File "main.py", line 283, in validate
+    plt.savefig(f'results/{opts.run_name}/val_samples/{img_id}_overlay_iter{iter}.png', bbox_inches='tight', pad_inches=0)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/pyplot.py", line 979, in savefig
+    res = fig.savefig(*args, **kwargs)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/figure.py", line 3046, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2319, in print_figure
+    result = print_method(
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 1648, in wrapper
+    return func(*args, **kwargs)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/_api/deprecation.py", line 415, in wrapper
+    return func(*inner_args, **inner_kwargs)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 540, in print_png
+    FigureCanvasAgg.draw(self)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 436, in draw
+    self.figure.draw(self.renderer)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/artist.py", line 73, in draw_wrapper
+    result = draw(artist, renderer, *args, **kwargs)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/artist.py", line 50, in draw_wrapper
+    return draw(artist, renderer)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/figure.py", line 2837, in draw
+    mimage._draw_list_compositing_images(
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/artist.py", line 50, in draw_wrapper
+    return draw(artist, renderer)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/axes/_base.py", line 3091, in draw
+    mimage._draw_list_compositing_images(
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/image.py", line 132, in _draw_list_compositing_images
+    a.draw(renderer)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/artist.py", line 50, in draw_wrapper
+    return draw(artist, renderer)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/image.py", line 646, in draw
+    im, l, b, trans = self.make_image(
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/image.py", line 956, in make_image
+    return self._make_image(self._A, bbox, transformed_bbox, clip,
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/image.py", line 558, in _make_image
+    self, _rgb_to_rgba(A[..., :3]), out_shape, t, alpha=alpha)
+  File "/home/chenht/.local/lib/python3.8/site-packages/matplotlib/image.py", line 208, in _rgb_to_rgba
+    rgba[:, :, :3] = A
+KeyboardInterrupt

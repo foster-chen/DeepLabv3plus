@@ -1,0 +1,204 @@
+Device: cuda
+Dataset: cityscapes, Train set: 2975, Val set: 500
+[!] Retrain
+Epoch 1, Itrs 10/30000, Loss=1.562322
+Epoch 1, Itrs 20/30000, Loss=0.717828
+Epoch 1, Itrs 30/30000, Loss=0.963730
+Epoch 1, Itrs 40/30000, Loss=0.858163
+Epoch 1, Itrs 50/30000, Loss=0.616871
+Epoch 1, Itrs 60/30000, Loss=0.705720
+Epoch 1, Itrs 70/30000, Loss=0.707493
+Epoch 1, Itrs 80/30000, Loss=0.716165
+Epoch 1, Itrs 90/30000, Loss=0.569535
+0it [00:00, ?it/s]/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+Epoch 1, Itrs 100/30000, Loss=0.651453
+Model saved as checkpoints/delete_2022-09-09_160159/latest_deeplabv3plus_resnet101_cityscapes_os16.pth
+validation...
+
+
+
+
+
+
+
+
+
+
+
+
+
+125it [00:28,  4.43it/s]
+Overall Acc: 0.817750
+Mean Acc: 0.304375
+FreqW Acc: 0.691361
+Mean IoU: 0.254417
+Model saved as checkpoints/delete_2022-09-09_160159/best_0.254417_iter100_deeplabv3plus_resnet101_cityscapes_os16.pth
+Epoch 1, Itrs 110/30000, Loss=0.590255
+Epoch 1, Itrs 120/30000, Loss=0.655675
+Epoch 1, Itrs 130/30000, Loss=0.416595
+Epoch 1, Itrs 140/30000, Loss=0.573694
+Epoch 1, Itrs 150/30000, Loss=0.442603
+Epoch 1, Itrs 160/30000, Loss=0.546614
+Epoch 1, Itrs 170/30000, Loss=0.483228
+Epoch 1, Itrs 180/30000, Loss=0.499688
+Epoch 1, Itrs 190/30000, Loss=0.589755
+Epoch 1, Itrs 200/30000, Loss=0.497300
+0it [00:00, ?it/s]/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+1it [00:01,  1.10s/it]
+Model saved as checkpoints/delete_2022-09-09_160159/latest_deeplabv3plus_resnet101_cityscapes_os16.pth
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+125it [00:27,  4.53it/s]
+Overall Acc: 0.788283
+Mean Acc: 0.341708
+FreqW Acc: 0.663397
+Mean IoU: 0.270975
+Model saved as checkpoints/delete_2022-09-09_160159/best_0.270975_iter200_deeplabv3plus_resnet101_cityscapes_os16.pth
+Epoch 1, Itrs 210/30000, Loss=0.446881
+Epoch 1, Itrs 220/30000, Loss=0.452938
+Epoch 1, Itrs 230/30000, Loss=0.523836
+Epoch 1, Itrs 240/30000, Loss=0.424521
+Epoch 1, Itrs 250/30000, Loss=0.499120
+Epoch 1, Itrs 260/30000, Loss=0.475959
+Epoch 1, Itrs 270/30000, Loss=0.436992
+Epoch 1, Itrs 280/30000, Loss=0.420709
+Epoch 1, Itrs 290/30000, Loss=0.473704
+Epoch 1, Itrs 300/30000, Loss=0.401113
+0it [00:00, ?it/s]/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+Model saved as checkpoints/delete_2022-09-09_160159/latest_deeplabv3plus_resnet101_cityscapes_os16.pth
+validation...
+
+
+
+
+
+
+
+
+
+
+
+
+
+125it [00:27,  4.51it/s]
+Overall Acc: 0.841452
+Mean Acc: 0.390213
+FreqW Acc: 0.738913
+Mean IoU: 0.320116
+Model saved as checkpoints/delete_2022-09-09_160159/best_0.320116_iter300_deeplabv3plus_resnet101_cityscapes_os16.pth
+Epoch 1, Itrs 310/30000, Loss=0.353113
+Epoch 1, Itrs 320/30000, Loss=0.360381
+Epoch 1, Itrs 330/30000, Loss=0.448997
+Epoch 1, Itrs 340/30000, Loss=0.355816
+Epoch 1, Itrs 350/30000, Loss=0.398514
+Epoch 1, Itrs 360/30000, Loss=0.370871
+Epoch 1, Itrs 370/30000, Loss=0.407400
+Epoch 1, Itrs 380/30000, Loss=0.444620
+Epoch 1, Itrs 390/30000, Loss=0.393404
+Epoch 1, Itrs 400/30000, Loss=0.391214
+0it [00:00, ?it/s]/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+Model saved as checkpoints/delete_2022-09-09_160159/latest_deeplabv3plus_resnet101_cityscapes_os16.pth
+validation...
+
+
+
+
+
+
+
+
+
+
+
+
+
+125it [00:28,  4.39it/s]
+Overall Acc: 0.514040
+Mean Acc: 0.217524
+FreqW Acc: 0.389675
+Mean IoU: 0.136391
+Epoch 1, Itrs 410/30000, Loss=0.379115
+Epoch 1, Itrs 420/30000, Loss=0.423845
+Epoch 1, Itrs 430/30000, Loss=0.436313
+Epoch 1, Itrs 440/30000, Loss=0.444301
+Epoch 1, Itrs 450/30000, Loss=0.483230
+Epoch 1, Itrs 460/30000, Loss=0.432559
+Epoch 1, Itrs 470/30000, Loss=0.326684
+Epoch 1, Itrs 480/30000, Loss=0.389826
+Epoch 1, Itrs 490/30000, Loss=0.321774
+Epoch 1, Itrs 500/30000, Loss=0.288277
+0it [00:00, ?it/s]/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torchvision/transforms/functional.py:423: UserWarning: Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.
+  warnings.warn(
+1it [00:01,  1.19s/it]
+Model saved as checkpoints/delete_2022-09-09_160159/latest_deeplabv3plus_resnet101_cityscapes_os16.pth
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+123it [00:29,  4.75it/s]
+Overall Acc: 0.875873
+Mean Acc: 0.474163
+FreqW Acc: 0.789280
+Mean IoU: 0.390754
+
+125it [00:29,  4.19it/s]
+Epoch 1, Itrs 510/30000, Loss=0.342375
+Epoch 1, Itrs 520/30000, Loss=0.364257
+Epoch 1, Itrs 530/30000, Loss=0.306638
+Epoch 1, Itrs 540/30000, Loss=0.355574
+Epoch 1, Itrs 550/30000, Loss=0.300772
+Epoch 1, Itrs 560/30000, Loss=0.278740
+Epoch 1, Itrs 570/30000, Loss=0.312947
+Traceback (most recent call last):
+  File "main.py", line 502, in <module>
+    main()
+  File "main.py", line 451, in main
+    optimizer.step()
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/optim/lr_scheduler.py", line 65, in wrapper
+    return wrapped(*args, **kwargs)
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/optim/optimizer.py", line 88, in wrapper
+    return func(*args, **kwargs)
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/autograd/grad_mode.py", line 27, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/optim/sgd.py", line 144, in step
+    F.sgd(params_with_grad,
+  File "/home/chenht/.conda/envs/epe/lib/python3.8/site-packages/torch/optim/_functional.py", line 177, in sgd
+    d_p = d_p.add(param, alpha=weight_decay)
+KeyboardInterrupt
+Epoch 1, Itrs 580/30000, Loss=0.313368
