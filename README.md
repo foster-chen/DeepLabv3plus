@@ -1,6 +1,6 @@
 # DeepLabv3Plus-Pytorch
 
-Pretrained DeepLabv3, DeepLabv3+ for Pascal VOC & Cityscapes.
+Baseline model DeepLabv3, DeepLabv3+ for Carla-EPE-23, modified from VainF's [repository](https://github.com/VainF/DeepLabV3Plus-Pytorch).
 
 ## Quick Start 
 
@@ -10,7 +10,7 @@ Specify the model architecture with '--model ARCH_NAME' and set the output strid
 | DeepLabV3    |  DeepLabV3+        |
 | :---: | :---:     |
 |deeplabv3_resnet50|deeplabv3plus_resnet50|
-|deeplabv3_resnet101|deeplabv3plus_resnet101|
+|deeplabv3_resnet101|*deeplabv3plus_resnet101*|
 |deeplabv3_mobilenet|deeplabv3plus_mobilenet ||
 |deeplabv3_hrnetv2_48 | deeplabv3plus_hrnetv2_48 |
 |deeplabv3_hrnetv2_32 | deeplabv3plus_hrnetv2_32 |
