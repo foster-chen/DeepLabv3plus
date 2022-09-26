@@ -9,7 +9,7 @@ from datetime import datetime
 import wandb
 
 from torch.utils import data
-from datasets import VOCSegmentation, Cityscapes, NightLab, Carla
+from datasets import VOCSegmentation, Cityscapes, NightLab, Carla, BDD_100K
 from utils import ext_transforms as et
 from metrics import StreamSegMetrics
 
@@ -31,7 +31,7 @@ def get_argparser():
     parser.add_argument("--wandb", action='store_true', default=False,
                         help='Inject W&B monitoring')
     parser.add_argument("--coder", type=str, choices=['voc', 'cityscapes', 'nightlab', 'carla'], default=None,
-                        help='Select train_id mapper')
+                        help='Select train_id mapper, now depreciated.')
     parser.add_argument("--boost_dataset", type=str, default=None,
                         choices=['carla'], help='Name of dataset for boosting')
     parser.add_argument("--boost_data_root", type=str, default=None,
@@ -45,7 +45,7 @@ def get_argparser():
     parser.add_argument("--data_root", type=str, default='./datasets/data',
                         help="path to Dataset")
     parser.add_argument("--dataset", type=str, default='voc',
-                        choices=['voc', 'cityscapes', 'nightlab', 'carla'], help='Name of dataset')
+                        choices=['voc', 'cityscapes', 'nightlab', 'carla', 'bdd-100k'], help='Name of dataset')
     parser.add_argument("--num_classes", type=int, default=None,
                         help="num classes (default: None)")
     
@@ -194,6 +194,29 @@ def get_dataset(opts):
         val_dst = NightLab(root=opts.data_root,
                              split='val', coder=opts.coder, transform=val_transform)
         
+    elif opts.dataset == 'bdd-100k':
+        train_transform = et.ExtCompose([
+            # et.ExtResize( 512 ),
+            et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size)),
+            et.ExtColorJitter(brightness=0.5, contrast=0.5, saturation=0.5),
+            et.ExtRandomHorizontalFlip(),
+            et.ExtToTensor(),
+            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225]),
+        ])
+
+        val_transform = et.ExtCompose([
+            # et.ExtResize( 512 ),
+            et.ExtToTensor(),
+            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225]),
+        ])
+
+        train_dst = BDD_100K(root=opts.data_root,
+                               split='train', coder=opts.coder, transform=train_transform)
+        val_dst = BDD_100K(root=opts.data_root,
+                             split='val', coder=opts.coder, transform=val_transform)
+        
     elif opts.dataset == 'carla':
         train_transform = et.ExtCompose([
             # et.ExtResize( 512 ),
@@ -220,7 +243,7 @@ def get_dataset(opts):
     if opts.boost_dataset is not None:
         if opts.boost_dataset.lower() == 'carla':
             boost_dst = Carla(root=opts.boost_data_root,
-                              split='train', transform=train_transform)
+                              split='both', transform=train_transform)
             if opts.coder is not None:
                 if opts.coder.lower() == 'voc':
                     boost_dst.decode_target = VOCSegmentation.decode_target
@@ -348,13 +371,10 @@ def main():
             opts.num_classes = 19
         elif opts.dataset.lower() == 'nightlab':
             opts.num_classes = 19
+        elif opts.dataset.lower() == 'bdd-100k':
+            opts.num_classes = 19
         elif opts.dataset.lower() == 'carla':
             opts.num_classes = 17
-
-    if opts.wandb:
-        wandb.init(project="DeepLabv3plus",
-                   name=opts.run_name,
-                   config=opts)
     
     # Setup visualization
     vis = Visualizer(port=opts.vis_port,
@@ -383,12 +403,21 @@ def main():
         train_dst, val_dst, boost_dst = get_dataset(opts)
 
         boost_loader = data.DataLoader(boost_dst, batch_size=opts.boost_batch_size, shuffle=True, num_workers=2, drop_last=True)
+        print(f"Total batch size: {opts.batch_size + opts.boost_batch_size}\nReal batch size: {opts.batch_size}\nBoost batch size: {opts.boost_batch_size}")
         print(f"Boost set: {len(boost_dst)}", end=' ')
     else:
         train_dst, val_dst = get_dataset(opts)
     
-    train_loader = data.DataLoader(train_dst, batch_size=opts.batch_size, shuffle=True, num_workers=2,
-        drop_last=True)  # drop_last=True to ignore single-image batches.
+    if opts.wandb:
+        wandb.init(project="DeepLabv3plus",
+                   name=opts.run_name,
+                   config=opts)
+    
+    if opts.batch_size == 0:
+        train_loader = boost_loader
+        opts.boost_dataset = None
+    else:
+        train_loader = data.DataLoader(train_dst, batch_size=opts.batch_size, shuffle=True, num_workers=2,drop_last=True)  # drop_last=True to ignore single-image batches.
     val_loader = data.DataLoader(val_dst, batch_size=opts.val_batch_size, shuffle=False, num_workers=2)
     print("Dataset: %s, Train set: %d, Val set: %d" %
           (opts.dataset, len(train_dst), len(val_dst)))
