@@ -76,8 +76,8 @@ def get_argparser():
                         help='crop validation (default: False)')
     parser.add_argument("--batch_size", type=int, default=16,
                         help='batch size (default: 16)')
-    parser.add_argument("--val_batch_size", type=int, default=4,
-                        help='batch size for validation (default: 4)')
+    parser.add_argument("--val_batch_size", type=int, default=16,
+                        help='batch size for validation (default: 16)')
     parser.add_argument("--crop_size", type=int, default=513)
 
     parser.add_argument("--ckpt", default=None, type=str,
@@ -98,6 +98,8 @@ def get_argparser():
                         help="epoch interval for eval (default: 100)")
     parser.add_argument("--download", action='store_true', default=False,
                         help="download datasets")
+    parser.add_argument("--debug", action='store_true', default=False,
+                        help="debug mode")
 
     # PASCAL VOC Options
     parser.add_argument("--year", type=str, default='2012',
@@ -279,7 +281,7 @@ def validate(opts, model, loader, device, metrics, iter, criterion=None, ret_sam
     """Do validation and return specified samples"""
     metrics.reset()
     ret_samples = []
-    img_to_store = opts.save_val_results
+    img_to_store = opts.save_val_results if opts.save_val_results is not None else 0
     if opts.save_val_results is not None:
         utils.mkdir("results")
         utils.mkdir(f"results/{opts.run_name}")
@@ -404,7 +406,7 @@ def main():
 
         boost_loader = data.DataLoader(boost_dst, batch_size=opts.boost_batch_size, shuffle=True, num_workers=2, drop_last=True)
         print(f"Total batch size: {opts.batch_size + opts.boost_batch_size}\nReal batch size: {opts.batch_size}\nBoost batch size: {opts.boost_batch_size}")
-        print(f"Boost set: {len(boost_dst)}", end=' ')
+        print(f"Boost set: {len(boost_dst)}")
     else:
         train_dst, val_dst = get_dataset(opts)
     
@@ -415,6 +417,7 @@ def main():
     
     if opts.batch_size == 0:
         train_loader = boost_loader
+        val_loader = data.DataLoader(val_dst, batch_size=opts.val_batch_size, shuffle=False, num_workers=2)
         opts.boost_dataset = None
     else:
         train_loader = data.DataLoader(train_dst, batch_size=opts.batch_size, shuffle=True, num_workers=2,drop_last=True)  # drop_last=True to ignore single-image batches.
@@ -525,6 +528,7 @@ def main():
                 else:
                     train_loader_dry = True
                     if train_loader_dry and boost_loader_dry:
+                        print("################ Both dataset depleted, starting new epoch ################")
                         break
                     else:
                         print("################ Authentic dataset depleted, reshuffling ################")
@@ -550,6 +554,32 @@ def main():
 
                 images = torch.cat((images, boost_images), dim=0)
                 labels = torch.cat((labels, boost_labels), dim=0)
+            
+            if opts.debug:
+                denorm = utils.Denormalize(mean=[0.485, 0.456, 0.406],
+                                   std=[0.229, 0.224, 0.225])
+                
+                utils.mkdir("debug")
+                utils.mkdir(f"debug/{opts.run_name}")
+                print(images.shape)
+                print(labels.shape)
+                for i in range(images.shape[0]):
+                    fig = plt.figure(frameon=False)
+                    ax = plt.Axes(fig, [0., 0., 1., 1.])
+                    ax.set_axis_off()
+                    fig.add_axes(ax)
+                    ax.imshow(denorm(images[i].permute(1, 2, 0).numpy()), aspect='auto')
+                    fig.savefig(f"debug/{opts.run_name}/{i}_rgb.png")
+                    plt.close()
+                    
+                    fig = plt.figure(frameon=False)
+                    ax = plt.Axes(fig, [0., 0., 1., 1.])
+                    ax.set_axis_off()
+                    fig.add_axes(ax)
+                    ax.imshow(labels[i].numpy(), aspect='auto')
+                    fig.savefig(f"debug/{opts.run_name}/{i}_semantic.png")
+                    plt.close()
+                return
             
             images = images.to(device, dtype=torch.float32)
             labels = labels.to(device, dtype=torch.long)
