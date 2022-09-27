@@ -9,7 +9,7 @@ from datetime import datetime
 import wandb
 
 from torch.utils import data
-from datasets import VOCSegmentation, Cityscapes, NightLab, Carla, BDD_100K
+from datasets import VOCSegmentation, Cityscapes, NightLab, Carla, BDD_100K, ACDC
 from utils import ext_transforms as et
 from metrics import StreamSegMetrics
 
@@ -30,6 +30,8 @@ def get_argparser():
                         help="Custom name of the run")
     parser.add_argument("--wandb", action='store_true', default=False,
                         help='Inject W&B monitoring')
+    parser.add_argument("--acdc_scene", type=str, default=None, choices=['snow', 'rain', 'fog', 'night'],
+                        help="Set ACDC dataset scenario")
     parser.add_argument("--coder", type=str, choices=['voc', 'cityscapes', 'nightlab', 'carla'], default=None,
                         help='Select train_id mapper, now depreciated.')
     parser.add_argument("--boost_dataset", type=str, default=None,
@@ -45,7 +47,7 @@ def get_argparser():
     parser.add_argument("--data_root", type=str, default='./datasets/data',
                         help="path to Dataset")
     parser.add_argument("--dataset", type=str, default='voc',
-                        choices=['voc', 'cityscapes', 'nightlab', 'carla', 'bdd-100k'], help='Name of dataset')
+                        choices=['voc', 'cityscapes', 'nightlab', 'carla', 'bdd-100k', 'acdc'], help='Name of dataset')
     parser.add_argument("--num_classes", type=int, default=None,
                         help="num classes (default: None)")
     
@@ -217,6 +219,30 @@ def get_dataset(opts):
         train_dst = BDD_100K(root=opts.data_root,
                                split='train', coder=opts.coder, transform=train_transform)
         val_dst = BDD_100K(root=opts.data_root,
+                             split='val', coder=opts.coder, transform=val_transform)
+        
+    elif opts.dataset == 'acdc':
+        assert opts.acdc_scene is not None, "set ACDC scene with --acdc_scene"
+        train_transform = et.ExtCompose([
+            # et.ExtResize( 512 ),
+            et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size)),
+            et.ExtColorJitter(brightness=0.5, contrast=0.5, saturation=0.5),
+            et.ExtRandomHorizontalFlip(),
+            et.ExtToTensor(),
+            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225]),
+        ])
+
+        val_transform = et.ExtCompose([
+            # et.ExtResize( 512 ),
+            et.ExtToTensor(),
+            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225]),
+        ])
+
+        train_dst = ACDC(root=opts.data_root, scene=opts.acdc_scene,
+                               split='train', coder=opts.coder, transform=train_transform)
+        val_dst = ACDC(root=opts.data_root, scene=opts.acdc_scene,
                              split='val', coder=opts.coder, transform=val_transform)
         
     elif opts.dataset == 'carla':
