@@ -401,6 +401,8 @@ def main():
             opts.num_classes = 19
         elif opts.dataset.lower() == 'bdd-100k':
             opts.num_classes = 19
+        elif opts.dataset.lower() == 'acdc':
+            opts.num_classes = 19
         elif opts.dataset.lower() == 'carla':
             opts.num_classes = 17
     
