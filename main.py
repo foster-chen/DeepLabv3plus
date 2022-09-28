@@ -445,7 +445,6 @@ def main():
     
     if opts.batch_size == 0:
         train_loader = boost_loader
-        val_loader = data.DataLoader(val_dst, batch_size=opts.val_batch_size, shuffle=False, num_workers=2)
         opts.boost_dataset = None
     else:
         train_loader = data.DataLoader(train_dst, batch_size=opts.batch_size, shuffle=True, num_workers=2,drop_last=True)  # drop_last=True to ignore single-image batches.
@@ -574,6 +573,7 @@ def main():
                     else:
                         boost_loader_dry = True
                         if train_loader_dry and boost_loader_dry:
+                            print("################ Both dataset depleted, starting new epoch ################")
                             break
                         else:
                             print("################ Boost dataset depleted, reshuffling ################")
