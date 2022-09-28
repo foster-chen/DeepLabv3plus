@@ -551,6 +551,7 @@ def main():
                 
             except StopIteration:
                 if opts.disable_fci:
+                    print("################ Autentic dataset depleted, starting new epoch ################")
                     break
                 else:
                     train_loader_dry = True
@@ -569,6 +570,7 @@ def main():
                     
                 except StopIteration:
                     if opts.disable_fci:
+                        print("################ Boost dataset depleted, starting new epoch ################")
                         break
                     else:
                         boost_loader_dry = True
