@@ -391,7 +391,7 @@ def main():
         elif opts.coder.lower() == 'nightlab':
             opts.num_classes = 19
         elif opts.coder.lower() == 'carla':
-            opts.num_classes = 17
+            opts.num_classes = 19
     else:
         if opts.dataset.lower() == 'voc':
             opts.num_classes = 21
@@ -404,7 +404,7 @@ def main():
         elif opts.dataset.lower() == 'acdc':
             opts.num_classes = 19
         elif opts.dataset.lower() == 'carla':
-            opts.num_classes = 17
+            opts.num_classes = 19
     
     # Setup visualization
     vis = Visualizer(port=opts.vis_port,
@@ -610,7 +610,7 @@ def main():
                     fig.savefig(f"debug/{opts.run_name}/{i}_semantic.png")
                     plt.close()
                 return
-            
+                
             images = images.to(device, dtype=torch.float32)
             labels = labels.to(device, dtype=torch.long)
 

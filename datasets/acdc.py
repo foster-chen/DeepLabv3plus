@@ -42,7 +42,7 @@ class ACDC(data.Dataset):
 
     @classmethod
     def create_df(cls, data_dir, scene, split):
-        data_list = sorted(cls.get_file_paths(os.path.join(data_dir, "images", scene, split)))
+        data_list = sorted(cls.get_file_paths(os.path.join(data_dir, "rgb_anon", scene, split)))
         label_list = sorted([filename for filename in cls.get_file_paths(os.path.join(data_dir, "gt", scene, split)) if "TrainIds" in filename])
 
         return pd.DataFrame(dict(data_path=data_list, label_path=label_list))
