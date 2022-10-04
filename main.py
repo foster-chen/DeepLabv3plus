@@ -42,7 +42,10 @@ def get_argparser():
                         help='The ratio of boost dataset per batch. boost_data_batch_size = round(batch_size * boost_strength). real_data_batch_size = batch_size - boost_data_batch_size')
     parser.add_argument("--disable_fci", action='store_true', default=False,
                         help='When using boost dataset, Force Complete Iteration (FCI) will ensure that no data is left unseen by the model. Use this option to disable FCI so that each epoch stops when one of the datasets finished iterating')
-    
+    parser.add_argument("--unweighted", action="store_true", default=False,
+                        help="Disable class weighting when calculating CrossEntropyLoss.")
+    parser.add_argument("--subsample", tyoe=float, default=None, 
+                        help="Take a random subsample of the full dataset, float input. Default is None")
     # Datset Options
     parser.add_argument("--data_root", type=str, default='./datasets/data',
                         help="path to Dataset")
@@ -57,7 +60,7 @@ def get_argparser():
                               not (name.startswith("__") or name.startswith('_')) and callable(
                               network.modeling.__dict__[name])
                               )
-    parser.add_argument("--model", type=str, default='deeplabv3plus_mobilenet',
+    parser.add_argument("--model", type=str, default='deeplabv3plus_resnet101',
                         choices=available_models, help='model name')
     parser.add_argument("--separable_conv", action='store_true', default=False,
                         help="apply separable conv to decoder and aspp")
@@ -171,7 +174,7 @@ def get_dataset(opts):
         ])
 
         train_dst = Cityscapes(root=opts.data_root,
-                               split='train', coder=opts.coder, transform=train_transform)
+                               split='train', coder=opts.coder, transform=train_transform, subsample=opts.subsample)
         val_dst = Cityscapes(root=opts.data_root,
                              split='val', coder=opts.coder, transform=val_transform)
         
@@ -473,12 +476,15 @@ def main():
     elif opts.lr_policy == 'step':
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=opts.step_size, gamma=0.1)
 
+    if opts.unweighted:
+        train_dst.class_weights = None
+        
     # Set up criterion
     # criterion = utils.get_loss(opts.loss_type)
     if opts.loss_type == 'focal_loss':
         criterion = utils.FocalLoss(ignore_index=255, size_average=True)
     elif opts.loss_type == 'cross_entropy':
-        criterion = nn.CrossEntropyLoss(ignore_index=255, reduction='mean')
+        criterion = nn.CrossEntropyLoss(ignore_index=255, reduction='mean', weight=train_dst.class_weights)
 
     def save_ckpt(path):
         """ save current model

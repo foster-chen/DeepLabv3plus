@@ -1,6 +1,7 @@
 import json
 import os
 from collections import namedtuple
+import random
 
 import torch
 import torch.utils.data as data
@@ -27,7 +28,7 @@ class Cityscapes(data.Dataset):
     #train_id_to_color = np.array(train_id_to_color)
     #id_to_train_id = np.array([c.category_id for c in classes], dtype='uint8') - 1
 
-    def __init__(self, root, split='train', mode='fine', target_type='semantic', coder=None, transform=None):
+    def __init__(self, root, split='train', mode='fine', target_type='semantic', coder=None, transform=None, subsample=None):
         self.classes = get_cs_trainId(coder)
         train_id_to_color = [c.color for c in self.classes if (c.train_id != -1 and c.train_id != 255)]
         train_id_to_color.append([0, 0, 0])
@@ -45,6 +46,8 @@ class Cityscapes(data.Dataset):
         self.split = split
         self.images = []
         self.targets = []
+        self.class_weights = _get_class_weights()
+        self.subsample = subsample
 
         if split not in ['train', 'test', 'val']:
             raise ValueError('Invalid split for mode! Please use split="train", split="test"'
@@ -63,6 +66,29 @@ class Cityscapes(data.Dataset):
                 target_name = '{}_{}'.format(file_name.split('_leftImg8bit')[0],
                                              self._get_target_suffix(self.mode, self.target_type))
                 self.targets.append(os.path.join(target_dir, target_name))
+                
+        if self.subsample:
+            random.seed(42)
+            sampled = random.sample(list(np.arange(0, len(self.images), 1)))
+            self.images = list(np.array(self.images, dtype='object')[sampled])
+            self.targets = list(np.array(self.targets, dtype='object')[sampled])
+                
+    def _get_class_weights(self):
+        try:
+            class_weights = np.load(os.path.join(self.root, 'class_weights.npy'))
+            return class_weights
+        except FileNotFoundError:
+            print("class_weights.npy not found, computing class weights...")
+            label_counts = np.zeros(shape=(34), dtype='int64')
+            for filename in tqdm(self.targets, desc="Caculating"):
+                im = np.array(Image.open(filename))
+                im[im == -1] = 0
+                classes, counts = np.unique(im, return_counts=True)
+                label_counts[classes] += counts
+            train_id_counts = label_counts[c.id for c in classes if c.train_id != 255] + 1
+            class_weights = np.sum(train_id_counts) / (19 * train_id_counts)
+            np.save(os.path.join(self.root, "class_weights.npy"), class_weights)
+            return class_weights
 
     def encode_target(self, target):
         return self.id_to_train_id[np.array(target)]

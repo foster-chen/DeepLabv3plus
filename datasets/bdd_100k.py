@@ -8,6 +8,7 @@ from PIL import Image
 import numpy as np
 import pandas as pd
 from .label import get_carla_trainId, get_cs_trainId
+from tqdm import tqdm
 
 
 class BDD_100K(data.Dataset):
@@ -24,12 +25,29 @@ class BDD_100K(data.Dataset):
         self.split = split
         self.tranform = transform
         self.df = self.create_df(self.root, self.split)
-
+        self.class_weights = _get_class_weights()
         # print(self.df.iloc[:5, 0])
         # print(self.df.iloc[:5, 1])
         # print(self.df.iloc[:5, 2])
         # data_dir = "/home/chenht/datasets/NightLab/"
     
+    def _get_class_weights(self):
+        try:
+            class_weights = np.load(os.path.join(self.root, 'class_weights.npy'))
+            return class_weights
+        except FileNotFoundError:
+            print("class_weights.npy not found, computing class weights...")
+            label_counts = np.zeros(shape=(20), dtype='int64')
+            for filename in tqdm(self.df.iloc[:, 2], desc="Caculating"):
+                im = np.array(Image.open(filename))
+                im[im == 255] = 19
+                classes, counts = np.unique(im, return_counts=True)
+                label_counts[classes] += counts
+            train_id_counts = label_counts + 1
+            class_weights = np.sum(train_id_counts) / (19 * train_id_counts)
+            np.save(os.path.join(self.root, "class_weights.npy"), class_weights[:-1])
+            return class_weights
+            
     @classmethod
     def get_file_paths(cls, directory):  # helper function to get absolute paths for all files within a directory
         file_paths = []
