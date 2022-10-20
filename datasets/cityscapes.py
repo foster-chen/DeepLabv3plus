@@ -8,6 +8,7 @@ import torch.utils.data as data
 from PIL import Image
 import numpy as np
 from .label import get_cs_trainId
+from tqdm import tqdm
 
 
 class Cityscapes(data.Dataset):
@@ -46,7 +47,6 @@ class Cityscapes(data.Dataset):
         self.split = split
         self.images = []
         self.targets = []
-        self.class_weights = _get_class_weights()
         self.subsample = subsample
 
         if split not in ['train', 'test', 'val']:
@@ -67,9 +67,11 @@ class Cityscapes(data.Dataset):
                                              self._get_target_suffix(self.mode, self.target_type))
                 self.targets.append(os.path.join(target_dir, target_name))
                 
+        self.class_weights = self._get_class_weights()
+                
         if self.subsample:
             random.seed(42)
-            sampled = random.sample(list(np.arange(0, len(self.images), 1)))
+            sampled = random.sample(list(np.arange(0, len(self.images), 1)), round(self.subsample * len(self.images)))
             self.images = list(np.array(self.images, dtype='object')[sampled])
             self.targets = list(np.array(self.targets, dtype='object')[sampled])
                 
@@ -80,15 +82,15 @@ class Cityscapes(data.Dataset):
         except FileNotFoundError:
             print("class_weights.npy not found, computing class weights...")
             label_counts = np.zeros(shape=(34), dtype='int64')
-            for filename in tqdm(self.targets, desc="Caculating"):
+            for filename in tqdm(self.targets, desc="Caculating", total=len(self.targets)):
                 im = np.array(Image.open(filename))
                 im[im == -1] = 0
                 classes, counts = np.unique(im, return_counts=True)
                 label_counts[classes] += counts
-            train_id_counts = label_counts[c.id for c in classes if c.train_id != 255] + 1
+            train_id_counts = label_counts[[c.id for c in self.classes if c.train_id != 255]] + 1
             class_weights = np.sum(train_id_counts) / (19 * train_id_counts)
             np.save(os.path.join(self.root, "class_weights.npy"), class_weights)
-            return class_weights
+            return label_counts
 
     def encode_target(self, target):
         return self.id_to_train_id[np.array(target)]

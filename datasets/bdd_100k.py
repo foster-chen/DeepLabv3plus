@@ -25,7 +25,7 @@ class BDD_100K(data.Dataset):
         self.split = split
         self.tranform = transform
         self.df = self.create_df(self.root, self.split)
-        self.class_weights = _get_class_weights()
+        self.class_weights = self._get_class_weights()
         # print(self.df.iloc[:5, 0])
         # print(self.df.iloc[:5, 1])
         # print(self.df.iloc[:5, 2])

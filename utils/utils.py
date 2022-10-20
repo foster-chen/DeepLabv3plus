@@ -28,10 +28,13 @@ def set_bn_momentum(model, momentum=0.1):
         if isinstance(m, nn.BatchNorm2d):
             m.momentum = momentum
 
-def fix_bn(model):
+def fix_bn(model, freeze_affine=False):
     for m in model.modules():
         if isinstance(m, nn.BatchNorm2d):
             m.eval()
+            if freeze_affine:
+                m.weight.requires_grad = False
+                m.bias.requires_grad = False
 
 def mkdir(path):
     if not os.path.exists(path):

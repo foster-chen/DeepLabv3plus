@@ -8,6 +8,7 @@ from PIL import Image
 import numpy as np
 import pandas as pd
 from .label import get_cs_trainId
+from tqdm import tqdm
 
 
 class NightLab(data.Dataset):
@@ -23,7 +24,7 @@ class NightLab(data.Dataset):
         self.split = split
         self.tranform = transform
         self.df = self.create_df(self.root, self.split)
-        self.class_weights = _get_class_weights()
+        self.class_weights = self._get_class_weights()
         # data_dir = "/home/chenht/datasets/NightLab/"
     
     def _get_class_weights(self):
@@ -38,7 +39,7 @@ class NightLab(data.Dataset):
                 im[im == -1] = 0
                 classes, counts = np.unique(im, return_counts=True)
                 label_counts[classes] += counts
-            train_id_counts = label_counts[c.id for c in classes if c.train_id != 255] + 1
+            train_id_counts = label_counts[[c.id for c in classes if c.train_id != 255]] + 1
             class_weights = np.sum(train_id_counts) / (19 * train_id_counts)
             np.save(os.path.join(self.root, "class_weights.npy"), class_weights)
             return class_weights

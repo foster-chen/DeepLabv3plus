@@ -7,6 +7,7 @@ import argparse
 import numpy as np
 from datetime import datetime
 import wandb
+import csv
 
 from torch.utils import data
 from datasets import VOCSegmentation, Cityscapes, NightLab, Carla, BDD_100K, ACDC
@@ -42,10 +43,12 @@ def get_argparser():
                         help='The ratio of boost dataset per batch. boost_data_batch_size = round(batch_size * boost_strength). real_data_batch_size = batch_size - boost_data_batch_size')
     parser.add_argument("--disable_fci", action='store_true', default=False,
                         help='When using boost dataset, Force Complete Iteration (FCI) will ensure that no data is left unseen by the model. Use this option to disable FCI so that each epoch stops when one of the datasets finished iterating')
-    parser.add_argument("--unweighted", action="store_true", default=False,
-                        help="Disable class weighting when calculating CrossEntropyLoss.")
-    parser.add_argument("--subsample", tyoe=float, default=None, 
+    parser.add_argument("--class_weights", type=str, default=None,
+                        help="Path to the weight for loss calculation, default to None")
+    parser.add_argument("--subsample", type=float, default=None, 
                         help="Take a random subsample of the full dataset, float input. Default is None")
+    parser.add_argument("--freeze_bn", action="store_true", default=False)
+    
     # Datset Options
     parser.add_argument("--data_root", type=str, default='./datasets/data',
                         help="path to Dataset")
@@ -81,8 +84,8 @@ def get_argparser():
                         help='crop validation (default: False)')
     parser.add_argument("--batch_size", type=int, default=16,
                         help='batch size (default: 16)')
-    parser.add_argument("--val_batch_size", type=int, default=16,
-                        help='batch size for validation (default: 16)')
+    parser.add_argument("--val_batch_size", type=int, default=4,
+                        help='batch size for validation (default: 4)')
     parser.add_argument("--crop_size", type=int, default=513)
 
     parser.add_argument("--ckpt", default=None, type=str,
@@ -371,6 +374,15 @@ def validate(opts, model, loader, device, metrics, iter, criterion=None, ret_sam
 
         score = metrics.get_results()
         
+        if opts.test_only:
+            _class_iou = list(score["Class IoU"].values())
+            _run_name = opts.ckpt.split('/')[-2]
+            with open(f"checkpoints/{_run_name}/class_iou.csv", "w") as f:
+                write = csv.writer(f)
+                write.writerow(_class_iou)
+        # print(score["Class IoU"])
+        # print(type(score["Class IoU"]))
+        
         if opts.wandb:
             wandb.log({"val_loss": np.average(val_loss),
                        "val_mIoU": score["Mean IoU"],
@@ -476,15 +488,17 @@ def main():
     elif opts.lr_policy == 'step':
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=opts.step_size, gamma=0.1)
 
-    if opts.unweighted:
-        train_dst.class_weights = None
+    if opts.class_weights:
+        class_weights = torch.Tensor(np.load(opts.class_weights)).to(device)
+    else:
+        class_weights = None
         
     # Set up criterion
     # criterion = utils.get_loss(opts.loss_type)
     if opts.loss_type == 'focal_loss':
         criterion = utils.FocalLoss(ignore_index=255, size_average=True)
     elif opts.loss_type == 'cross_entropy':
-        criterion = nn.CrossEntropyLoss(ignore_index=255, reduction='mean', weight=train_dst.class_weights)
+        criterion = nn.CrossEntropyLoss(ignore_index=255, reduction='mean', weight=class_weights)
 
     def save_ckpt(path):
         """ save current model
@@ -541,6 +555,10 @@ def main():
     while True:  # cur_itrs < opts.total_itrs:
         # =====  Train  =====
         model.train()
+        
+        if opts.freeze_bn:
+            utils.fix_bn(model.module.backbone, freeze_affine=True)  # add .module since model is a DataParallel wrapper of actual model
+        
         cur_epochs += 1
         
         train_iterator= train_loader.__iter__()
@@ -668,6 +686,9 @@ def main():
                         concat_img = np.concatenate((img, target, lbl), axis=2)  # concat along width
                         vis.vis_image('Sample %d' % k, concat_img)
                 model.train()
+            if opts.wandb:
+                last_lr = scheduler.get_last_lr()
+                wandb.log({"backbone_lr": last_lr[0], "classifier_lr": last_lr[1]}, step=cur_itrs)
             scheduler.step()
 
             if cur_itrs >= opts.total_itrs:

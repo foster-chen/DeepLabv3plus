@@ -8,6 +8,7 @@ from PIL import Image
 import numpy as np
 import pandas as pd
 from .label import get_carla_trainId, get_cs_trainId
+from tqdm import tqdm
 
 
 class ACDC(data.Dataset):
@@ -26,7 +27,7 @@ class ACDC(data.Dataset):
         self.split = split
         self.tranform = transform
         self.df = self.create_df(self.root, self.scene, self.split)
-        self.class_weights = _get_class_weights()
+        self.class_weights = self._get_class_weights()
         # print(self.df.iloc[:5, 0])
         # print(self.df.iloc[:5, 1])
         # print(self.df.iloc[:5, 2])
@@ -39,7 +40,7 @@ class ACDC(data.Dataset):
         except FileNotFoundError:
             print("class_weights.npy not found, computing class weights...")
             label_counts = np.zeros(shape=(20), dtype='int64')
-            for filename in tqdm(self.df.iloc[:, 2], desc="Caculating"):
+            for filename in tqdm(self.df.iloc[:, 1], desc="Caculating"):
                 im = np.array(Image.open(filename))
                 im[im == 255] = 19
                 classes, counts = np.unique(im, return_counts=True)
