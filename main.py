@@ -557,7 +557,7 @@ def main():
         model.train()
         
         if opts.freeze_bn:
-            utils.fix_bn(model.module.backbone, freeze_affine=True)  # add .module since model is a DataParallel wrapper of actual model
+            utils.fix_bn(model.module.backbone, affine=True)  # add .module since model is a DataParallel wrapper of actual model
         
         cur_epochs += 1
         

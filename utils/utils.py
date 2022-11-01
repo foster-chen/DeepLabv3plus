@@ -28,11 +28,11 @@ def set_bn_momentum(model, momentum=0.1):
         if isinstance(m, nn.BatchNorm2d):
             m.momentum = momentum
 
-def fix_bn(model, freeze_affine=False):
+def fix_bn(model, affine=True):
     for m in model.modules():
         if isinstance(m, nn.BatchNorm2d):
             m.eval()
-            if freeze_affine:
+            if not affine:
                 m.weight.requires_grad = False
                 m.bias.requires_grad = False
 

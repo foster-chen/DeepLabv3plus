@@ -85,6 +85,42 @@ def get_cs_trainId(mode):
             CityscapesClass('bicycle',              33, 7,   'vehicle',      7, True,  False, (119, 11, 32)),
             CityscapesClass('license plate',        -1, 255, 'vehicle',      7, False, True,  (0, 0, 142)),
         ]
+        
+    elif mode == "p4b":
+        classes = [
+            CityscapesClass('unlabeled',      0,  255, 'void',         0, False, True,  (0, 0, 0)),
+            CityscapesClass('ambiguous',      1,  255, 'void',         0, False, True,  (111, 74, 0)),
+            CityscapesClass('sky',            2,  10, 'void',         0, False, True,  (70, 130, 180)),
+            CityscapesClass('road',           3,  0, 'void',         0, False, True,  (128, 64, 128)),
+            CityscapesClass('sidewalk',       4,  1, 'void',         0, False, True,  (0, 0, 0)),
+            CityscapesClass('rail track',     5,  255, 'void',         0, False, True,  (111, 74, 0)),
+            CityscapesClass('terrain',        6,  9,  'void',         0, False, True,  (81, 0, 81)),
+            CityscapesClass('tree',           7,  8,   'flat',         1, False, False, (128, 64, 128)),
+            CityscapesClass('vegetation',     8,  8,   'flat',         1, False, False, (244, 35, 232)),
+            CityscapesClass('building',       9,  2, 'flat',         1, False, True,  (250, 170, 160)),
+            CityscapesClass('infrastructure', 10, 5,  'flat',         1, False, True,  (230, 150, 140)),
+            CityscapesClass('fence',          11, 4,   'construction', 2, False, False, (70, 70, 70)),
+            CityscapesClass('billboard',      12, 255,   'construction', 2, False, False, (102, 102, 156)),
+            CityscapesClass('traffic light',  13, 6,   'construction', 2, False, False, (190, 153, 153)),
+            CityscapesClass('traffic sign',   14, 7,  'construction', 2, False, True,  (180, 165, 180)),
+            CityscapesClass('mobile barrier', 15, 255,  'construction', 2, False, True,  (150, 100, 100)),
+            CityscapesClass('fire hydrant',   16, 255, 'construction', 2, False, True,  (150, 120, 90)),
+            CityscapesClass('chair',          17, 255,   'object',       3, False, False, (153, 153, 153)),
+            CityscapesClass('trash',          18, 255, 'object',       3, False, True,  (153, 153, 153)),
+            CityscapesClass('trash can',      19, 255,  'object',       3, False, False, (250, 170, 30)),
+            CityscapesClass('person',         20, 11,   'object',       3, False, False, (220, 220, 0)),
+            CityscapesClass('animal',         21, 255,   'nature',       4, False, False, (107, 142, 35)),
+            CityscapesClass('bicycle',        22, 18,  'nature',       4, False, False, (152, 251, 152)),
+            CityscapesClass('motrocycle',     23, 17,  'sky',          5, False, False, (70, 130, 180)),
+            CityscapesClass('car',            24, 13,   'human',        6, True,  False, (220, 20, 60)),
+            CityscapesClass('van',            25, 13,   'human',        6, True,  False, (255, 0, 0)),
+            CityscapesClass('bus',            26, 15,   'vehicle',      7, True,  False, (0, 0, 142)),
+            CityscapesClass('truck',          27, 14,   'vehicle',      7, True,  False, (0, 0, 70)),
+            CityscapesClass('trailer',        28, 255,   'vehicle',      7, True,  False, (0, 60, 100)),
+            CityscapesClass('train',          29, 16,   'vehicle',      7, True,  True,  (0, 0, 90)),
+            CityscapesClass('plane',          30, 255,   'vehicle',      7, True,  True,  (0, 0, 110)),
+            CityscapesClass('boat',           31, 255,   'vehicle',      7, True,  False, (0, 80, 100)),
+        ]
     
     return classes
 
@@ -126,6 +162,13 @@ def get_carla_trainId():
     ]
 
     return classes
+
+def get_p4b_sequence_weather():
+    weather2sequenceId = {
+        "day": [],
+        "night": [],
+        "rain": []
+    }
 
 if __name__ == "__main__":
 
