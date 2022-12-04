@@ -98,4 +98,10 @@ class Carla(data.Dataset):
         # return id_to_color
 # pd.set_option('display.max_colwidth', None) 
 # a = Carla("/home/chenht/datasets/Carla2Cityscapes/")
-
+if __name__ == "__main__":
+    path = "/DATA_EDS/chenht/datasets/Carla2Cityscapes_Motor1024/val/semantic/0-20221025010748020_semantic.png"
+    test_im = np.array(Image.open(path)).astype("uint8")
+    c = Carla("/DATA_EDS/chenht/datasets/Carla2Cityscapes_Motor1024/")
+    test_im = c.encode_target(test_im)
+    test_im = c.decode_target(test_im).astype('uint8')
+    Image.fromarray(test_im).save("/DATA_EDS/chenht/DeepLabv3plus/test.png")

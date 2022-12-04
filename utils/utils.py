@@ -31,7 +31,10 @@ def set_bn_momentum(model, momentum=0.1):
 def fix_bn(model, affine=True):
     for m in model.modules():
         if isinstance(m, nn.BatchNorm2d):
-            m.eval()
+            m.track_running_stats = False
+            m.running_mean = None
+            m.running_var = None
+            m.num_batches_tracked = None
             if not affine:
                 m.weight.requires_grad = False
                 m.bias.requires_grad = False

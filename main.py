@@ -10,7 +10,7 @@ import wandb
 import csv
 
 from torch.utils import data
-from datasets import VOCSegmentation, Cityscapes, NightLab, Carla, BDD_100K, ACDC
+from datasets import *
 from utils import ext_transforms as et
 from metrics import StreamSegMetrics
 
@@ -48,16 +48,19 @@ def get_argparser():
     parser.add_argument("--subsample", type=float, default=None, 
                         help="Take a random subsample of the full dataset, float input. Default is None")
     parser.add_argument("--freeze_bn", action="store_true", default=False)
-    
+    parser.add_argument("--mix", type=str, choices=['blend', 'concat', 'boost'], default='concat')
+    parser.add_argument("--mix_masterinput", type=str, default="0.5,0.5")
+    parser.add_argument("--sample_stat", type=str, default=None)
+    parser.add_argument("--sample_sum", type=str, default=None)
+    parser.add_argument("--class_sample_mask", type=str, default=None)
     # Datset Options
-    parser.add_argument("--data_root", type=str, default='./datasets/data',
+    parser.add_argument("--data_root", type=str, nargs='+', required=True,
                         help="path to Dataset")
-    parser.add_argument("--dataset", type=str, default='voc',
-                        choices=['voc', 'cityscapes', 'nightlab', 'carla', 'bdd-100k', 'acdc'], help='Name of dataset')
+    parser.add_argument("--dataset", type=str, nargs='+', required=True,
+                        choices=['voc', 'cityscapes', 'nightlab', 'carla', 'bdd-100k', 'acdc', 'sampled_carla', 'sampled_carla_masked'], help='Name of dataset')
     parser.add_argument("--num_classes", type=int, default=None,
                         help="num classes (default: None)")
-    
-    
+
     # Deeplab Options
     available_models = sorted(name for name in network.modeling.__dict__ if name.islower() and \
                               not (name.startswith("__") or name.startswith('_')) and callable(
@@ -86,7 +89,7 @@ def get_argparser():
                         help='batch size (default: 16)')
     parser.add_argument("--val_batch_size", type=int, default=4,
                         help='batch size for validation (default: 4)')
-    parser.add_argument("--crop_size", type=int, default=513)
+    parser.add_argument("--crop_size", type=int, default=768)
 
     parser.add_argument("--ckpt", default=None, type=str,
                         help="restore from checkpoint")
@@ -128,151 +131,120 @@ def get_argparser():
 def get_dataset(opts):
     """ Dataset And Augmentation
     """
-    if opts.dataset == 'voc':
-        train_transform = et.ExtCompose([
-            # et.ExtResize(size=opts.crop_size),
-            et.ExtRandomScale((0.5, 2.0)),
-            et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size), pad_if_needed=True),
-            et.ExtRandomHorizontalFlip(),
-            et.ExtToTensor(),
-            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-        ])
-        if opts.crop_val:
-            val_transform = et.ExtCompose([
-                et.ExtResize(opts.crop_size),
-                et.ExtCenterCrop(opts.crop_size),
+    train_dst_list = []
+    val_dst_list = []
+    for dataset, root in zip(opts.dataset, opts.data_root):
+        if dataset == 'voc':
+            train_transform = et.ExtCompose([
+                # et.ExtResize(size=opts.crop_size),
+                et.ExtRandomScale((0.5, 2.0)),
+                et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size), pad_if_needed=True),
+                et.ExtRandomHorizontalFlip(),
                 et.ExtToTensor(),
                 et.ExtNormalize(mean=[0.485, 0.456, 0.406],
                                 std=[0.229, 0.224, 0.225]),
             ])
+            if opts.crop_val:
+                val_transform = et.ExtCompose([
+                    et.ExtResize(opts.crop_size),
+                    et.ExtCenterCrop(opts.crop_size),
+                    et.ExtToTensor(),
+                    et.ExtNormalize(mean=[0.485, 0.456, 0.406],
+                                    std=[0.229, 0.224, 0.225]),
+                ])
+            else:
+                val_transform = et.ExtCompose([
+                    et.ExtToTensor(),
+                    et.ExtNormalize(mean=[0.485, 0.456, 0.406],
+                                    std=[0.229, 0.224, 0.225]),
+                ])
         else:
-            val_transform = et.ExtCompose([
+            train_transform = et.ExtCompose([
+                # et.ExtResize( 512 ),
+                et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size)),
+                et.ExtColorJitter(brightness=0.5, contrast=0.5, saturation=0.5),
+                et.ExtRandomHorizontalFlip(),
                 et.ExtToTensor(),
                 et.ExtNormalize(mean=[0.485, 0.456, 0.406],
                                 std=[0.229, 0.224, 0.225]),
             ])
-        train_dst = VOCSegmentation(root=opts.data_root, year=opts.year,
-                                    image_set='train', download=opts.download, transform=train_transform)
-        val_dst = VOCSegmentation(root=opts.data_root, year=opts.year,
-                                  image_set='val', download=False, transform=val_transform)
 
-    elif opts.dataset == 'cityscapes':
-        train_transform = et.ExtCompose([
-            # et.ExtResize( 512 ),
-            et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size)),
-            et.ExtColorJitter(brightness=0.5, contrast=0.5, saturation=0.5),
-            et.ExtRandomHorizontalFlip(),
-            et.ExtToTensor(),
-            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-        ])
+            val_transform = et.ExtCompose([
+                # et.ExtResize(opts.crop_size),
+                # et.ExtCenterCrop(opts.crop_size),
+                et.ExtToTensor(),
+                et.ExtNormalize(mean=[0.485, 0.456, 0.406],
+                                std=[0.229, 0.224, 0.225]),
+            ])
 
-        val_transform = et.ExtCompose([
-            # et.ExtResize(opts.crop_size),
-            # et.ExtCenterCrop(opts.crop_size),
-            et.ExtToTensor(),
-            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-        ])
+        if dataset == 'voc':
+            train_dst = VOCSegmentation(root=root, year=opts.year,
+                                        image_set='train', download=opts.download, transform=train_transform)
+            val_dst = VOCSegmentation(root=root, year=opts.year,
+                                    image_set='val', download=False, transform=val_transform)
 
-        train_dst = Cityscapes(root=opts.data_root,
-                               split='train', coder=opts.coder, transform=train_transform, subsample=opts.subsample)
-        val_dst = Cityscapes(root=opts.data_root,
-                             split='val', coder=opts.coder, transform=val_transform)
-        
-    elif opts.dataset == 'nightlab':
-        train_transform = et.ExtCompose([
-            # et.ExtResize( 512 ),
-            et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size)),
-            et.ExtColorJitter(brightness=0.5, contrast=0.5, saturation=0.5),
-            et.ExtRandomHorizontalFlip(),
-            et.ExtToTensor(),
-            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-        ])
+        elif dataset == 'cityscapes':
+            train_dst = Cityscapes(root=root,
+                                split='train', coder=opts.coder, transform=train_transform, subsample=opts.subsample)
+            val_dst = Cityscapes(root=root,
+                                split='val', coder=opts.coder, transform=val_transform)
+            
+        elif dataset == 'nightlab':
+            train_dst = NightLab(root=root,
+                                split='train', coder=opts.coder, transform=train_transform)
+            val_dst = NightLab(root=root,
+                                split='val', coder=opts.coder, transform=val_transform)
+            
+        elif dataset == 'bdd-100k':
+            train_dst = BDD_100K(root=root,
+                                split='train', coder=opts.coder, transform=train_transform)
+            val_dst = BDD_100K(root=root,
+                                split='val', coder=opts.coder, transform=val_transform)
+            
+        elif dataset == 'acdc':
+            assert opts.acdc_scene is not None, "set ACDC scene with --acdc_scene"
 
-        val_transform = et.ExtCompose([
-            # et.ExtResize( 512 ),
-            et.ExtToTensor(),
-            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-        ])
+            train_dst = ACDC(root=root, scene=opts.acdc_scene,
+                                split='train', coder=opts.coder, transform=train_transform)
+            val_dst = ACDC(root=root, scene=opts.acdc_scene,
+                                split='val', coder=opts.coder, transform=val_transform)
+            
+        elif dataset == 'carla':
+            train_dst = Carla(root=root,
+                                split='train', transform=train_transform)
+            val_dst = Carla(root=root,
+                                split='val', transform=val_transform)
 
-        train_dst = NightLab(root=opts.data_root,
-                               split='train', coder=opts.coder, transform=train_transform)
-        val_dst = NightLab(root=opts.data_root,
-                             split='val', coder=opts.coder, transform=val_transform)
-        
-    elif opts.dataset == 'bdd-100k':
-        train_transform = et.ExtCompose([
-            # et.ExtResize( 512 ),
-            et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size)),
-            et.ExtColorJitter(brightness=0.5, contrast=0.5, saturation=0.5),
-            et.ExtRandomHorizontalFlip(),
-            et.ExtToTensor(),
-            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-        ])
+        elif dataset == 'sampled_carla':
+            train_dst = SampledCarlaDataset(root,
+            'train', opts.sample_stat, opts.sample_sum, custom_mask=opts.class_sample_mask, transform=train_transform)
+            val_dst = Carla(root,
+                                split='val', transform=val_transform)
+        elif dataset == 'sampled_carla_masked':
+            train_dst = SampledCarlaMaskDataset(root,
+            'train', opts.sample_stat, opts.sample_sum, custom_mask=opts.class_sample_mask, transform=train_transform)
+            val_dst = SampledCarlaMaskDataset(root,
+                                split='val', transform=val_transform)
+            
+        train_dst_list.append(train_dst)
+        val_dst_list.append(val_dst)
 
-        val_transform = et.ExtCompose([
-            # et.ExtResize( 512 ),
-            et.ExtToTensor(),
-            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-        ])
-
-        train_dst = BDD_100K(root=opts.data_root,
-                               split='train', coder=opts.coder, transform=train_transform)
-        val_dst = BDD_100K(root=opts.data_root,
-                             split='val', coder=opts.coder, transform=val_transform)
-        
-    elif opts.dataset == 'acdc':
-        assert opts.acdc_scene is not None, "set ACDC scene with --acdc_scene"
-        train_transform = et.ExtCompose([
-            # et.ExtResize( 512 ),
-            et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size)),
-            et.ExtColorJitter(brightness=0.5, contrast=0.5, saturation=0.5),
-            et.ExtRandomHorizontalFlip(),
-            et.ExtToTensor(),
-            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-        ])
-
-        val_transform = et.ExtCompose([
-            # et.ExtResize( 512 ),
-            et.ExtToTensor(),
-            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-        ])
-
-        train_dst = ACDC(root=opts.data_root, scene=opts.acdc_scene,
-                               split='train', coder=opts.coder, transform=train_transform)
-        val_dst = ACDC(root=opts.data_root, scene=opts.acdc_scene,
-                             split='val', coder=opts.coder, transform=val_transform)
-        
-    elif opts.dataset == 'carla':
-        train_transform = et.ExtCompose([
-            # et.ExtResize( 512 ),
-            et.ExtRandomCrop(size=(opts.crop_size, opts.crop_size)),
-            et.ExtColorJitter(brightness=0.5, contrast=0.5, saturation=0.5),
-            et.ExtRandomHorizontalFlip(),
-            et.ExtToTensor(),
-            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-        ])
-
-        val_transform = et.ExtCompose([
-            # et.ExtResize( 512 ),
-            et.ExtToTensor(),
-            et.ExtNormalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-        ])
-
-        train_dst = Carla(root=opts.data_root,
-                               split='train', transform=train_transform)
-        val_dst = Carla(root=opts.data_root,
-                             split='val', transform=val_transform)
+    if len(train_dst_list) == 1:
+        train_dst = train_dst_list[0]
+        val_dst = val_dst_list[0]
+    else:
+        if opts.mix == "concat":
+            train_dst = torch.utils.data.ConcatDataset(train_dst_list)
+            train_dst.decode_target = train_dst_list[0].decode_target
+            val_dst = torch.utils.data.ConcatDataset(val_dst_list)
+            val_dst.decode_target = val_dst_list[0].decode_target
+        elif opts.mix == "blend":
+            sample_prob = [float(i) for i in opts.mix_masterinput.split(",")]
+            train_dst = BlendedDataset(sample_prob, *train_dst_list)
+            train_dst.decode_target = train_dst_list[0].decode_target
+            val_dst = val_dst_list[0]
+        elif opts.mix == "boost":
+            raise NotImplementedError
     
     if opts.boost_dataset is not None:
         if opts.boost_dataset.lower() == 'carla':
@@ -374,12 +346,12 @@ def validate(opts, model, loader, device, metrics, iter, criterion=None, ret_sam
 
         score = metrics.get_results()
         
-        if opts.test_only:
-            _class_iou = list(score["Class IoU"].values())
-            _run_name = opts.ckpt.split('/')[-2]
-            with open(f"checkpoints/{_run_name}/class_iou.csv", "w") as f:
-                write = csv.writer(f)
-                write.writerow(_class_iou)
+
+        _class_iou = list(score["Class IoU"].values())
+        _run_name = opts.ckpt.split('/')[-2]
+        with open(f"checkpoints/{_run_name}/class_iou.csv", "w") as f:
+            write = csv.writer(f)
+            write.writerow(_class_iou)
         # print(score["Class IoU"])
         # print(type(score["Class IoU"]))
         
@@ -392,6 +364,7 @@ def validate(opts, model, loader, device, metrics, iter, criterion=None, ret_sam
 
 def main():
     opts = get_argparser().parse_args()
+    assert len(opts.dataset) == len(opts.data_root), "Specify the path of dataset with --data_root for each dataset"
 
     opts.run_name = f"{opts.run_name}_{datetime.now().strftime('%Y-%m-%d_%H%M%S')}"
     
@@ -408,18 +381,20 @@ def main():
         elif opts.coder.lower() == 'carla':
             opts.num_classes = 19
     else:
-        if opts.dataset.lower() == 'voc':
+        if opts.dataset[0].lower() == 'voc':
             opts.num_classes = 21
-        elif opts.dataset.lower() == 'cityscapes':
+        else:
             opts.num_classes = 19
-        elif opts.dataset.lower() == 'nightlab':
-            opts.num_classes = 19
-        elif opts.dataset.lower() == 'bdd-100k':
-            opts.num_classes = 19
-        elif opts.dataset.lower() == 'acdc':
-            opts.num_classes = 19
-        elif opts.dataset.lower() == 'carla':
-            opts.num_classes = 19
+        # elif opts.dataset[0].lower() == 'cityscapes':
+        #     opts.num_classes = 19
+        # elif opts.dataset[0].lower() == 'nightlab':
+        #     opts.num_classes = 19
+        # elif opts.dataset[0].lower() == 'bdd-100k':
+        #     opts.num_classes = 19
+        # elif opts.dataset[0].lower() == 'acdc':
+        #     opts.num_classes = 19
+        # elif opts.dataset[0].lower() == 'carla':
+        #     opts.num_classes = 19
     
     # Setup visualization
     vis = Visualizer(port=opts.vis_port,
@@ -437,7 +412,7 @@ def main():
     random.seed(opts.random_seed)
     
     # Setup dataloader
-    if opts.dataset == 'voc' and not opts.crop_val:
+    if opts.dataset[0] == 'voc' and not opts.crop_val:
         opts.val_batch_size = 1
 
     if opts.boost_dataset is not None:
@@ -462,17 +437,26 @@ def main():
         train_loader = boost_loader
         opts.boost_dataset = None
     else:
-        train_loader = data.DataLoader(train_dst, batch_size=opts.batch_size, shuffle=True, num_workers=2,drop_last=True)  # drop_last=True to ignore single-image batches.
+        if opts.mix == "blend" or "sampled_carla" in opts.dataset:
+            train_loader = data.DataLoader(train_dst, batch_size=opts.batch_size, num_workers=2,drop_last=True)  # drop_last=True to ignore single-image batches.
+        else:
+            train_loader = data.DataLoader(train_dst, batch_size=opts.batch_size, shuffle=True, num_workers=2,drop_last=True)  # drop_last=True to ignore single-image batches.
+
     val_loader = data.DataLoader(val_dst, batch_size=opts.val_batch_size, shuffle=False, num_workers=2)
-    print("Dataset: %s, Train set: %d, Val set: %d" %
-          (opts.dataset, len(train_dst), len(val_dst)))
+
+    if opts.mix == "blend":
+        print(f"Dataset:\t{', '.join(opts.dataset)}\nMix:\t Blend\nBlend Probability:\t{opts.mix_masterinput}")
+    elif "sampled_carla" in opts.dataset:
+        print(f"Dataset:\t{', '.join(opts.dataset)}, class sampled")
+    else:
+        print("Dataset: %s, Train set: %d, Val set: %d" %(opts.dataset, len(train_dst), len(val_dst)))
 
     # Set up model (all models are 'constructed at network.modeling)
     model = network.modeling.__dict__[opts.model](num_classes=opts.num_classes, output_stride=opts.output_stride)
     if opts.separable_conv and 'plus' in opts.model:
         network.convert_to_separable_conv(model.classifier)
     utils.set_bn_momentum(model.backbone, momentum=0.01)
-
+    
     # Set up metrics
     metrics = StreamSegMetrics(opts.num_classes)
 
@@ -520,7 +504,11 @@ def main():
     if opts.ckpt is not None and os.path.isfile(opts.ckpt):
         # https://github.com/VainF/DeepLabV3Plus-Pytorch/issues/8#issuecomment-605601402, @PytaichukBohdan
         checkpoint = torch.load(opts.ckpt, map_location=torch.device('cpu'))
-        model.load_state_dict(checkpoint["model_state"])
+        try:
+            model.load_state_dict(checkpoint["model_state"])
+        except RuntimeError:
+            utils.fix_bn(model.backbone, affine=True)
+            model.load_state_dict(checkpoint["model_state"])
         model = nn.DataParallel(model)
         model.to(device)
         if opts.continue_training:
@@ -535,7 +523,10 @@ def main():
         print("[!] Retrain")
         model = nn.DataParallel(model)
         model.to(device)
-
+ 
+    if opts.freeze_bn:
+        utils.fix_bn(model.module.backbone, affine=True)
+    
     # ==========   Train Loop   ==========#
     vis_sample_id = np.random.randint(0, len(val_loader), opts.vis_num_samples,
                                       np.int32) if opts.enable_vis else None  # sample idxs for visualization
@@ -556,8 +547,8 @@ def main():
         # =====  Train  =====
         model.train()
         
-        if opts.freeze_bn:
-            utils.fix_bn(model.module.backbone, affine=True)  # add .module since model is a DataParallel wrapper of actual model
+        # if opts.freeze_bn:
+        #     utils.fix_bn(model.module.backbone, affine=True)  # add .module since model is a DataParallel wrapper of actual model
         
         cur_epochs += 1
         
@@ -575,7 +566,7 @@ def main():
                 
             except StopIteration:
                 if opts.disable_fci:
-                    print("################ Autentic dataset depleted, starting new epoch ################")
+                    print("################ Authentic dataset depleted, starting new epoch ################")
                     break
                 else:
                     train_loader_dry = True
@@ -586,6 +577,7 @@ def main():
                         print("################ Authentic dataset depleted, reshuffling ################")
                         train_iterator = train_loader.__iter__()
                         images, labels = train_iterator.__next__()
+                        cur_epochs += 1
                     
     
             if opts.boost_dataset is not None:
@@ -660,7 +652,7 @@ def main():
                 interval_loss = 0.0
 
             if (cur_itrs) % opts.val_interval == 0:
-                save_ckpt(f'checkpoints/{opts.run_name}/latest_{opts.model}_{opts.dataset}_os{opts.output_stride}.pth')
+                save_ckpt(f'checkpoints/{opts.run_name}/latest_{opts.model}_{opts.dataset[0]}_os{opts.output_stride}.pth')
                 print("validation...")
                 model.eval()
                 val_score, ret_samples = validate(
@@ -671,7 +663,7 @@ def main():
                     if best_ckpt_filename != "":
                         os.remove(f"checkpoints/{opts.run_name}/{best_ckpt_filename}")
                     best_score = val_score['Mean IoU']
-                    best_ckpt_filename = f"best_{best_score:.6f}_iter{cur_itrs}_{opts.model}_{opts.dataset}_os{opts.output_stride}.pth"
+                    best_ckpt_filename = f"best_{best_score:.6f}_iter{cur_itrs}_{opts.model}_{opts.dataset[0]}_os{opts.output_stride}.pth"
                     save_ckpt(f'checkpoints/{opts.run_name}/{best_ckpt_filename}')
 
                 if vis is not None:  # visualize validation score and samples

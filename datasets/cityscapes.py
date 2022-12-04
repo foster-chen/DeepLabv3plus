@@ -114,8 +114,8 @@ class Cityscapes(data.Dataset):
         if self.transform:
             image, target = self.transform(image, target)
             
-        if not isinstance(image, np.ndarray):
-            image = np.array(image)
+        # if not isinstance(image, np.ndarray):
+        #     image = np.array(image)
         target = self.encode_target(target)
         return image, target
 
