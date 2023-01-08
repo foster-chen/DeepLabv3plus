@@ -64,7 +64,7 @@ def get_coder():
         Class(  'train'                , 31 ,       16 , 'vehicle'         , 7       , True         , False        , (  0, 80,100) ),
         Class(  'motorcycle'           , 32 ,       17 , 'vehicle'         , 7       , True         , False        , (  0,  0,230) ),
         Class(  'bicycle'              , 33 ,       18 , 'vehicle'         , 7       , True         , False        , (119, 11, 32) ),
-        Class(  'license plate'        ,255 ,       -1 , 'vehicle'         , 7       , False        , True         , (  0,  0,142) ),
+        Class(  'license plate'        , -1 ,       -1 , 'vehicle'         , 7       , False        , True         , (  0,  0,142) ),
     ]
     carla_extra_classes = [
         Class(  'road line'            , 34 ,        0 , 'flat'            , 1       , False        , False         , (157,234, 50) ),
@@ -99,7 +99,7 @@ def carlacolorfile2labelfile(args):
     color_map_file, save_path = args
     color_map = np.asarray(Image.open(color_map_file))
     height, width, _ = color_map.shape
-    label_map = np.ones(shape=(height, width), dtype=np.uint8) * 250
+    label_map = np.ones(shape=(height, width), dtype=np.int16) * 250
     color2id = get_coder()
     for idx, (color, id) in enumerate(color2id.items()):
         mask = (color_map == color).all(axis=2) 
