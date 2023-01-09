@@ -44,6 +44,13 @@ def get_cs_trainId(mode):
             CityscapesClass('train',                31, 16,  'vehicle',      7, True,  False, (0, 80, 100)),
             CityscapesClass('motorcycle',           32, 17,  'vehicle',      7, True,  False, (0, 0, 230)),
             CityscapesClass('bicycle',              33, 18,  'vehicle',      7, True,  False, (119, 11, 32)),
+            
+            # Carla extra classes
+            CityscapesClass('road line',            34, 0,   'flat',         1, False, False, (157,234, 50)),
+            CityscapesClass('water',                35, 255, 'void',         0, False, True,  ( 45, 60,150)),
+            CityscapesClass('anomaly',              36, 255, 'void',         0, False, True,  (255,255,255)),
+            CityscapesClass('other',                37, 255, 'void',         0, False, True,  ( 55, 90, 80)),
+            
             CityscapesClass('license plate',        -1, 255, 'vehicle',      7, False, True,  (0, 0, 142)),
         ]
         
