@@ -1,0 +1,11 @@
+python main.py --model deeplabv3plus_resnet101\
+       	--dataset cityscapes\
+       	--lr 0.1\
+       	--crop_size 768\
+       	--batch_size 16\
+       	--output_stride 16\
+       	--data_root /opt/cloudroot/datasets/cityscapes\
+       	--gpu_id 6,7\
+       	--run_name CARLAT12_FT_Cityscapes_0.1\
+       	--ckpt checkpoints/best_0.842460_iter28600_deeplabv3plus_resnet101_carla_os16.pth \
+       	--wandb

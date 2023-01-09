@@ -67,7 +67,7 @@ class Cityscapes(data.Dataset):
                                              self._get_target_suffix(self.mode, self.target_type))
                 self.targets.append(os.path.join(target_dir, target_name))
                 
-        self.class_weights = self._get_class_weights()
+        # self.class_weights = self._get_class_weights()
                 
         if self.subsample:
             random.seed(42)
