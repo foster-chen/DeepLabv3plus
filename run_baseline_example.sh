@@ -1,0 +1,13 @@
+python main.py \
+	--model deeplabv3plus_resnet101 \
+	--dataset carla carla \
+	--lr 0.1 \
+	--crop_size 768 \
+	--batch_size 16 \
+	--output_stride 16 \
+	--data_root /DATA/DISCOVER/chenht/datasets/Carla2CityscapesV2/ /DATA/DISCOVER/chenht/datasets/Carla2Cityscapes_Motor1024/ \
+	--gpu_id 0,5,7,8 \
+	--run_name Ca2CS%Ca2CS-M_freeze_BN3_baseline \
+	--save_val_results 5 \
+	--freeze_bn \
+	--wandb

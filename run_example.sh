@@ -1,0 +1,13 @@
+python main.py --model deeplabv3plus_resnet101\
+       	--dataset cityscapes\
+       	--lr 0.1\
+       	--crop_size 768\
+       	--batch_size 16\
+       	--output_stride 16\
+       	--data_root /DATA/DISCOVER/chenht/datasets/CityScapes/\
+       	--gpu_id 0,1\
+       	--run_name Ca2CS%Ca2CS-M_FT2CS_0.1_FBN3\
+       	--ckpt checkpoints/Ca2CS%Ca2CS-M_baseline_2022-11-13_135421/best_0.784383_iter13000_deeplabv3plus_resnet101_carla_os16.pth\
+       	--wandb \
+       	--subsample 0.1\
+       	--freeze_bn

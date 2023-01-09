@@ -53,9 +53,10 @@ def get_argparser():
     parser.add_argument("--sample_stat", type=str, default=None)
     parser.add_argument("--sample_sum", type=str, default=None)
     parser.add_argument("--class_sample_mask", type=str, default=None)
+    parser.add_argument("--blend_schedule", type=str, default=None, help="Set blending schedule. Format: \"period,increment,reset_lr\". Example: \"3000,0.1,1\" means increment blending ratio by 0.1 every 3000 iterations, reset lr each time.")
     # Datset Options
     parser.add_argument("--data_root", type=str, nargs='+', required=True,
-                        help="path to Dataset")
+                        help="path to Dataset. Could input multiple data roots. Note that the number of dataset arguments must equate the number of data_root arguments.")
     parser.add_argument("--dataset", type=str, nargs='+', required=True,
                         choices=['voc', 'cityscapes', 'nightlab', 'carla', 'bdd-100k', 'acdc', 'sampled_carla', 'sampled_carla_masked'], help='Name of dataset')
     parser.add_argument("--num_classes", type=int, default=None,
@@ -223,7 +224,7 @@ def get_dataset(opts):
         elif dataset == 'sampled_carla_masked':
             train_dst = SampledCarlaMaskDataset(root,
             'train', opts.sample_stat, opts.sample_sum, custom_mask=opts.class_sample_mask, transform=train_transform)
-            val_dst = SampledCarlaMaskDataset(root,
+            val_dst = Carla(root,
                                 split='val', transform=val_transform)
             
         train_dst_list.append(train_dst)
@@ -346,12 +347,12 @@ def validate(opts, model, loader, device, metrics, iter, criterion=None, ret_sam
 
         score = metrics.get_results()
         
-
-        _class_iou = list(score["Class IoU"].values())
-        _run_name = opts.ckpt.split('/')[-2]
-        with open(f"checkpoints/{_run_name}/class_iou.csv", "w") as f:
-            write = csv.writer(f)
-            write.writerow(_class_iou)
+        if opts.test_only:
+            _class_iou = list(score["Class IoU"].values())
+            _run_name = opts.ckpt.split('/')[-2]
+            with open(f"checkpoints/{_run_name}/class_iou.csv", "w") as f:
+                write = csv.writer(f)
+                write.writerow(_class_iou)
         # print(score["Class IoU"])
         # print(type(score["Class IoU"]))
         
@@ -437,7 +438,7 @@ def main():
         train_loader = boost_loader
         opts.boost_dataset = None
     else:
-        if opts.mix == "blend" or "sampled_carla" in opts.dataset:
+        if opts.mix == "blend" or "sampled_carla" in opts.dataset or "sampled_carla_masked" in opts.dataset:
             train_loader = data.DataLoader(train_dst, batch_size=opts.batch_size, num_workers=2,drop_last=True)  # drop_last=True to ignore single-image batches.
         else:
             train_loader = data.DataLoader(train_dst, batch_size=opts.batch_size, shuffle=True, num_workers=2,drop_last=True)  # drop_last=True to ignore single-image batches.
@@ -446,8 +447,8 @@ def main():
 
     if opts.mix == "blend":
         print(f"Dataset:\t{', '.join(opts.dataset)}\nMix:\t Blend\nBlend Probability:\t{opts.mix_masterinput}")
-    elif "sampled_carla" in opts.dataset:
-        print(f"Dataset:\t{', '.join(opts.dataset)}, class sampled")
+    elif "sampled_carla" in opts.dataset or "sampled_carla_masked" in opts.dataset:
+        print(f"Dataset:\t{', '.join(opts.dataset)}")
     else:
         print("Dataset: %s, Train set: %d, Val set: %d" %(opts.dataset, len(train_dst), len(val_dst)))
 
@@ -543,6 +544,14 @@ def main():
     
     best_ckpt_filename = ""
     interval_loss = 0
+    
+    if opts.blend_schedule:
+        assert opts.mix == "blend"
+        schedule_p, blend_increment = opts.blend_schedule.split(",")
+        schedule_p = int(schedule_p)
+        blend_increment = float(blend_increment)
+        sample_prob = [float(i) for i in opts.mix_masterinput.split(",")]
+    
     while True:  # cur_itrs < opts.total_itrs:
         # =====  Train  =====
         model.train()
@@ -561,6 +570,20 @@ def main():
         
         while True:
             cur_itrs += 1
+            
+            if opts.blend_schedule:
+                if cur_itrs % schedule_p == 0 and sample_prob[0] != 1:
+                    sample_prob[0] = sample_prob[0] + blend_increment if sample_prob[0] + blend_increment < 1 else 1.0
+                    for n, i in enumerate(sample_prob[1:]):
+                        sample_prob[n + 1] = i - blend_increment if i - blend_increment > 0 else 0.0
+                    opts.mix_masterinput = ','.join([str(i) for i in sample_prob])
+                    print("############################################################\n")
+                    print(f"Blend ratio incremented.\nDataset:\t{', '.join(opts.dataset)}\nMix:\t Blend\nBlend Probability:\t{opts.mix_masterinput}")
+                    print("\n############################################################")
+                    train_dst, _ = get_dataset(opts)
+                    train_loader = data.DataLoader(train_dst, batch_size=opts.batch_size, num_workers=2,drop_last=True)
+                    train_iterator = train_loader.__iter__()
+                
             try:
                 images, labels = train_iterator.__next__()
                 

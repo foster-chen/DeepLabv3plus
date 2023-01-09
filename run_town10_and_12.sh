@@ -1,0 +1,12 @@
+python main.py \
+    --model deeplabv3plus_resnet101 \
+    --dataset carla carla \
+    --lr 0.1 \
+    --crop_size 768 \
+    --batch_size 16 \
+    --output_stride 16 \
+    --data_root /home/tb5zhh/workspace/datasets/CarlaTown12toCityscapes/ /DATA_EDS/chenht/datasets/Carla2CityscapesV2/ \
+    --gpu_id 4,5,6,7 \
+    --run_name CarlaT12toCS%Carla2CS_baseline \
+    --wandb \
+    --mix concat
