@@ -1,0 +1,12 @@
+python main.py --model deeplabv3plus_resnet101\
+       	--dataset cityscapes carla\
+       	--lr 0.01\
+       	--crop_size 768\
+       	--batch_size 8\
+       	--output_stride 16\
+		--mix blend\
+		--mix_masterinput 0.5,0.5\
+       	--data_root /home/tb5zhh/workspace/datasets/cityscapes/ /home/tb5zhh/workspace/datasets/CarlaTown12toCityscapes/\
+       	--gpu_id 1,2\
+       	--run_name BLEND_CARLAT12_Cityscapes_0.5_0.01\
+       	--wandb
